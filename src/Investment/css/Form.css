@@ -1,10 +1,12 @@
 .form-title {
-    padding-bottom: 15px;
-    text-align: center;
-    font-size: xx-large;
+  padding-bottom: 15px;
+  text-align: center;
+  font-size: xx-large;
 }
 .investment-form {
-  background-color: #616161;
+  background-color: #000000;
+  color: rgb(59, 217, 72);
+  border: 2px solid rgb(59, 217, 72);
   font-family: Arial, sans-serif;
   margin: 0 auto;
   padding: 20px;
@@ -19,12 +21,14 @@ select {
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
+  color: gray;
   border-radius: 4px;
   box-sizing: border-box;
+  height: 35px; 
 }
 .choice {
-  height: 46px;
   margin-bottom: 10px;
+  color: gray;
 }
 .button-box {
   display: "flex";
@@ -36,6 +40,7 @@ select {
   height: 33px;
   border-radius: 15px;
   margin: 5px;
+  color: rgb(0, 0, 0);
 }
 .Buy {
   background-color: green;
@@ -53,4 +58,16 @@ select {
   left: 50%;
   transform: translateX(-50%);
   background-color: rgb(109, 65, 156);
+}
+.Buy:hover{
+  background-color: rgb(0, 74, 0);
+}
+.Sell:hover {
+  background-color: rgb(159, 0, 0);
+}
+.Exchange:hover {
+  background-color: rgb(160, 141, 0);
+}
+.transfer-btn:hover {
+  background-color: rgb(53, 22, 87);
 }

@@ -86,6 +86,7 @@ export default function TransferFormComponent() {
       <div className="form-title">Transfer</div>
       <label htmlFor="from-account">From:</label>
       <input 
+        placeholder="Binance"
         value={from}
         onChange={(e) => setFrom(e.target.value)}
         type="text" 
@@ -94,6 +95,7 @@ export default function TransferFormComponent() {
       />
       <label htmlFor="to-account">To:</label>
       <input 
+        placeholder="SafePal"
         value={to}
         onChange={(e) => setTo(e.target.value)}
         type="text" 
@@ -102,6 +104,7 @@ export default function TransferFormComponent() {
       />
       <label htmlFor="transfer-amount">Amount:</label>
       <input
+        placeholder="0"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
         type="number"
@@ -111,6 +114,7 @@ export default function TransferFormComponent() {
       />
       <label htmlFor="transfer-fee">Fee in RON:</label>
       <input
+        placeholder="0"
         value={feeInRON}
         onChange={(e) => setFeeInRON(e.target.value)}
         type="number"
@@ -138,6 +142,7 @@ export default function TransferFormComponent() {
       </select>
       <label htmlFor="tx-link">Transaction link:</label>
       <input 
+        placeholder="https://www.explorer.com"
         value={txLink}
         onChange={(e) => setTxLink(e.target.value)}
         type="text" 

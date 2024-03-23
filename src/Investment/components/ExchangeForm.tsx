@@ -134,6 +134,7 @@ export default function ExchangeFormComponent() {
       </select>
       <label htmlFor="from-in-ron">{from ? from : "From"} Price In RON:</label>
       <input
+        placeholder="0"
         value={fromInRon}
         onChange={(e) => setFromInRon(e.target.value)}
         type="number"
@@ -144,6 +145,7 @@ export default function ExchangeFormComponent() {
       />
       <label htmlFor="to-in-ron">{to ? to : "To"} Price In RON:</label>
       <input
+        placeholder="0"
         value={toInRon}
         onChange={(e) => setToInRon(e.target.value)}
         type="number"
@@ -154,6 +156,7 @@ export default function ExchangeFormComponent() {
       />
       <label htmlFor="amount">Amount ({from ? from : "From"}):</label>
       <input
+        placeholder="0"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
         type="number"
@@ -163,6 +166,7 @@ export default function ExchangeFormComponent() {
       />
       <label htmlFor="fee">Fee in RON:</label>
       <input
+        placeholder="0"
         value={feeInRON}
         onChange={(e) => setFeeInRON(e.target.value)}
         type="number"

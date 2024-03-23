@@ -13,11 +13,11 @@ export const NavbarComponent: React.FC<NavbarComponentProps> = ({
 
   return (
     <>
-      <nav className="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 mb-4">
+      <nav className="border-y-2 border-green-600 bg-black mb-4">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <Link
             to={"/"}
-            className="flex items-center space-x-3 rtl:space-x-reverse text-white text-lg font-bold md:hover:text-green-700"
+            className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 text-lg font-bold md:hover:text-green-600"
           >
             Home
           </Link>
@@ -27,7 +27,7 @@ export const NavbarComponent: React.FC<NavbarComponentProps> = ({
             }}
             data-collapse-toggle="navbar-solid-bg"
             type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-green-300 rounded-lg md:hidden hover:text-green-600 focus:outline-none focus:ring-2 focus:ring-green-600 dark:text-green-600 dark:focus:ring-green-600"
             aria-controls="navbar-solid-bg"
             aria-expanded={isOpen}
           >
@@ -53,11 +53,11 @@ export const NavbarComponent: React.FC<NavbarComponentProps> = ({
             } w-full md:block md:w-auto`}
             id="navbar-solid-bg"
           >
-            <ul className="flex flex-col font-medium mt-4 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
+            <ul className="flex flex-col font-medium mt-4 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-transparent md:dark:bg-transparent">
               <li>
                 <Link
                   to={"/history"}
-                  className="flex items-center space-x-3 rtl:space-x-reverse text-white md:hover:text-green-700"
+                  className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
                 >
                   Transaction History
                 </Link>
@@ -65,9 +65,25 @@ export const NavbarComponent: React.FC<NavbarComponentProps> = ({
               <li>
                 <Link
                   to={"/saveTransactionForms"}
-                  className="flex items-center space-x-3 rtl:space-x-reverse text-white md:hover:text-green-700"
+                  className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
                 >
                   Save Transaction
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={"/signup"}
+                  className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
+                >
+                  Sign Up
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={"/signin"}
+                  className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
+                >
+                  Sign In
                 </Link>
               </li>
             </ul>
