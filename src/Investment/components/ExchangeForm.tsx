@@ -74,6 +74,7 @@ export default function ExchangeFormComponent() {
 
     const response = await fetch("http://localhost:8080/SaveTransaction", {
       method: "POST",
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
       },

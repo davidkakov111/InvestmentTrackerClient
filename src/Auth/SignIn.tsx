@@ -38,14 +38,15 @@ const SignInForm = () => {
 
     const response = await fetch("http://localhost:8080/SignInUser", {
       method: "POST",
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newUser),
     });
-    
-    const result = await response.json();
 
+    const result = await response.json();
+    
     if (!response.ok) {
       alert("Error occurred when trying to sign in the user! (API -> backend -> API)");
       return;
@@ -57,9 +58,11 @@ const SignInForm = () => {
       alert("Incorrect password!")
       return;
     }
-    alert("Successfull sign in!")    
+  
     // Clean up 
     setFormData({ email: '', password: ''});
+    
+    window.location.href = '/';
   };
 
   // State handler

@@ -1,6 +1,7 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { UserContext } from "../Context/UserContext";
+import { SignOut } from "../Auth/SignOut";
 
 interface NavbarComponentProps {
   children: ReactNode;
@@ -10,6 +11,7 @@ export const NavbarComponent: React.FC<NavbarComponentProps> = ({
   children,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const {user, setUser} = useContext(UserContext);
 
   return (
     <>
@@ -54,38 +56,53 @@ export const NavbarComponent: React.FC<NavbarComponentProps> = ({
             id="navbar-solid-bg"
           >
             <ul className="flex flex-col font-medium mt-4 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-transparent md:dark:bg-transparent">
-              <li>
-                <Link
-                  to={"/history"}
-                  className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
-                >
-                  Transaction History
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={"/saveTransactionForms"}
-                  className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
-                >
-                  Save Transaction
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={"/signup"}
-                  className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
-                >
-                  Sign Up
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to={"/signin"}
-                  className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
-                >
-                  Sign In
-                </Link>
-              </li>
+              {user.isAuthenticated ?  
+                <>
+                  <li>
+                    <Link
+                      to={"/history"}
+                      className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
+                    >
+                      Transaction History
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={"/saveTransactionForms"}
+                      className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
+                    >
+                      Save Transaction
+                    </Link>
+                  </li>
+                  <li>
+                    <a
+                      onClick={SignOut}
+                      className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
+                    >
+                      Sign Out
+                    </a>
+                  </li>
+                </>
+              :
+                <>
+                  <li>
+                    <Link
+                      to={"/signup"}
+                      className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
+                    >
+                      Sign Up
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to={"/signin"}
+                      className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
+                    >
+                      Sign In
+                    </Link>
+                  </li>
+                </>
+              }
             </ul>
           </div>
         </div>

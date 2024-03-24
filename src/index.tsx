@@ -6,6 +6,8 @@ import { NavbarComponent } from './mainComponents/Navbar';
 import SignUpForm from './Auth/SignUp';
 import SignInForm from './Auth/SignIn';
 import "./index.css";
+import { UserContextProvider } from './Context/UserContext';
+import { NotRequireSignIn, RequireSignIn } from './mainComponents/RequireSignIn';
 
 const router = createBrowserRouter([
   {
@@ -14,19 +16,19 @@ const router = createBrowserRouter([
   },
   {
     path: "/signup",
-    element: <NavbarComponent><SignUpForm/></NavbarComponent>
+    element: <NotRequireSignIn><NavbarComponent><SignUpForm/></NavbarComponent></NotRequireSignIn>
   },
   {
     path: "/signin",
-    element: <NavbarComponent><SignInForm/></NavbarComponent>
+    element: <NotRequireSignIn><NavbarComponent><SignInForm/></NavbarComponent></NotRequireSignIn>
   },
   {
     path: "/saveTransactionForms",
-    element: <NavbarComponent><InvestForm/></NavbarComponent>
+    element: <RequireSignIn><NavbarComponent><InvestForm/></NavbarComponent></RequireSignIn>
   },
   {
     path: "/history",
-    element: <NavbarComponent><HistoryTable/></NavbarComponent>
+    element: <RequireSignIn><NavbarComponent><HistoryTable/></NavbarComponent></RequireSignIn>
   },
 ]);
 
@@ -34,5 +36,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <RouterProvider router={router} />
+  <UserContextProvider>
+    <RouterProvider router={router} />
+  </UserContextProvider>
 );

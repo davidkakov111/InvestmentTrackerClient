@@ -44,6 +44,7 @@ const SignUpForm = () => {
 
     const response = await fetch("http://localhost:8080/SaveUser", {
       method: "POST",
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
       },
@@ -63,6 +64,8 @@ const SignUpForm = () => {
 
     // Clean up 
     setFormData({ email: '', password: '', passwordAgain: '' });
+
+    window.location.href = '/';
   };
 
   // State handler
