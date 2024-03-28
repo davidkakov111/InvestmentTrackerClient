@@ -60,6 +60,14 @@ export const NavbarComponent: React.FC<NavbarComponentProps> = ({
                 <>
                   <li>
                     <Link
+                      to={"/statistics"}
+                      className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
+                    >
+                      Statistics
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       to={"/history"}
                       className="flex items-center space-x-3 rtl:space-x-reverse text-green-300 md:hover:text-green-600"
                     >

@@ -8,6 +8,7 @@ import SignInForm from './Auth/SignIn';
 import "./index.css";
 import { UserContextProvider } from './Context/UserContext';
 import { NotRequireSignIn, RequireSignIn } from './mainComponents/RequireSignIn';
+import { StatisticsComponent } from './Investment/Statistics';
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "/history",
     element: <RequireSignIn><NavbarComponent><HistoryTable/></NavbarComponent></RequireSignIn>
+  },
+  {
+    path: "/statistics",
+    element: <RequireSignIn><NavbarComponent><StatisticsComponent/></NavbarComponent></RequireSignIn>
   },
 ]);
 

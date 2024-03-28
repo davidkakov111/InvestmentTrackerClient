@@ -33,7 +33,7 @@ export default function HistoryTable() {
             <table className="history-table">
                 <thead>
                     <tr>
-                        <th>id</th>
+                        <th>Nr</th>
                         <th>Operation type</th>
                         <th>From</th>
                         <th>To</th>
@@ -47,15 +47,15 @@ export default function HistoryTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {history?.map((transaction) => (
+                    {history?.map((transaction, index) => (
                         <tr key={transaction.id}>
-                            <td className={transaction.operation}>{transaction.id}</td>
+                            <td className={transaction.operation}>{index+1}</td>
                             <td className={transaction.operation}>{transaction.operation}</td>
                             <td className={transaction.operation}>{transaction.frominstrument}</td>
                             <td className={transaction.operation}>{transaction.toinstrument}</td>
                             <td className={transaction.operation}>{transaction.frominron}</td>
                             <td className={transaction.operation}>{transaction.toinron}</td>
-                            <td className={transaction.operation}>{transaction.feeinron}</td>
+                            <td className={transaction.operation}>{transaction.fees}</td>
                             <td className={transaction.operation}>{transaction.amount}</td>
                             <td className={transaction.operation}>{transaction.what ? JSON.parse(transaction.what)[0] : ""}</td>
                             <td className={transaction.operation}>{transaction.what ? JSON.parse(transaction.what)[1] : ""}</td>
