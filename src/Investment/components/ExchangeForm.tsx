@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../css/Form.css";
 import { fiats, instruments } from "../Instruments";
+import { FeeInputsComponent } from "./FeeComponent";
 
 type historyInterface = {
   operation: string;
@@ -23,39 +24,45 @@ function validateInputs(
   feeInputs: any[],
   operation: string
 ) {
-  if (!from || !to || !fromInRon || !toInRon || !amount || !date || feeInputs.length === 0) {
+  if (
+    !from ||
+    !to ||
+    !fromInRon ||
+    !toInRon ||
+    !amount ||
+    !date ||
+    feeInputs.length === 0
+  ) {
     alert("All the fields are required!");
     return false;
   }
   if (operation === "BUY") {
     if (!fiats.includes(from) || fiats.includes(to)) {
-      alert(
-        "You can only buy cryptocurrencies with fiat."
-      );
+      alert("You can only buy cryptocurrencies with fiat.");
       return false;
     }
   } else if (operation === "SELL") {
     if (fiats.includes(from) || !fiats.includes(to)) {
-      alert(
-        "You can only sell cryptocurrencies to fiat."
-      );
+      alert("You can only sell cryptocurrencies to fiat.");
       return false;
     }
   } else {
     if (fiats.includes(from) || fiats.includes(to)) {
-      alert("Exchange is only for crypto-to-crypto transactions. In this case, you should either buy or sell.");
-      return false;
-    }    
-  }
-  
-  for (let fee of feeInputs) {
-    if (!fee.instrument || !fee.amount || !fee.priceInRON) {
-      alert("Fee input(s) can't be empty!")
+      alert(
+        "Exchange is only for crypto-to-crypto transactions. In this case, you should either buy or sell."
+      );
       return false;
     }
   }
 
-  const oldestTS = new Date('2009-01-03').getTime();
+  for (let fee of feeInputs) {
+    if (!fee.instrument || !fee.amount) {
+      alert("Fee input(s) can't be empty!");
+      return false;
+    }
+  }
+
+  const oldestTS = new Date("2009-01-03").getTime();
   const transactionTS = new Date(date).getTime();
   const currentTS = new Date().getTime();
 
@@ -74,23 +81,7 @@ export default function ExchangeFormComponent() {
   const [toInRon, setToInRon] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
-  const [feeInputs, setFeeInputs] = useState([{ instrument: '', amount: '', priceInRON:''}]);
-
-  const handleAddFeeInput = () => {
-    setFeeInputs([...feeInputs, { instrument: '', amount: '', priceInRON:''}])
-  };
-
-  const handleRemoveFeeInput = (index: number) => {
-    let array = [...feeInputs]
-    array.splice(index, 1);
-    setFeeInputs(array)
-  };
-
-  const handleFeeChange = (index: number, value: string, field:"instrument"|"priceInRON"|"amount") => {
-    const newInputs = [...feeInputs]
-    newInputs[index][field] = value
-    setFeeInputs(newInputs);
-  };
+  const [feeInputs, setFeeInputs] = useState([{ instrument: "", amount: "" }]);
 
   async function handler(operation: string) {
     if (
@@ -104,7 +95,8 @@ export default function ExchangeFormComponent() {
         feeInputs,
         operation
       )
-    ) return;
+    )
+      return;
 
     const timeStamp = new Date(date).getTime();
     const newHistory: historyInterface = {
@@ -137,15 +129,22 @@ export default function ExchangeFormComponent() {
     setToInRon("");
     setAmount("");
     setDate("");
-    setFeeInputs([{ instrument: '', amount: '', priceInRON:''}]);
+    setFeeInputs([{ instrument: "", amount: "" }]);
   }
 
   return (
     <div className="investment-form">
       <div className="form-title">Trade</div>
       <div className="flex justify-between">
-        <label htmlFor="from">From:</label>
-        <label htmlFor="from-in-ron">{from ? from : "From"} Price In RON:</label>
+        <span
+          title="Select the instrument (fiat currency or cryptocurrency) used to make this transaction. For instance, if you traded EUR for BTC, select EUR."
+          style={{ cursor: "help" }}
+        >
+          From:
+        </span>
+        <span title="Enter the price of this instrument (fiat currency or cryptocurrency) in RON (Romanian Leu)." style={{ cursor: "help" }}>
+          {from ? from : "From"} Price In RON:
+        </span>
       </div>
       <div className="flex items-center space-x-4">
         <select
@@ -170,7 +169,7 @@ export default function ExchangeFormComponent() {
           value={fromInRon}
           onChange={(e) => {
             if (Number(e.target.value) >= 0) {
-              setFromInRon(e.target.value)
+              setFromInRon(e.target.value);
             }
           }}
           type="number"
@@ -181,8 +180,15 @@ export default function ExchangeFormComponent() {
         />
       </div>
       <div className="flex justify-between">
-        <label htmlFor="to">To:</label>
-        <label htmlFor="to-in-ron">{to ? to : "To"} Price In RON:</label>
+        <span
+          title="Select the instrument (fiat currency or cryptocurrency) for which you made this transaction. For instance, if you traded EUR for BTC, select BTC."
+          style={{ cursor: "help" }}
+        >
+          To:
+        </span>
+        <span title="Enter the price of this instrument (fiat currency or cryptocurrency) in RON (Romanian Leu)." style={{ cursor: "help" }}>
+          {to ? to : "To"} Price In RON:
+        </span>
       </div>
       <div className="flex items-center space-x-4">
         <select
@@ -207,7 +213,7 @@ export default function ExchangeFormComponent() {
           value={toInRon}
           onChange={(e) => {
             if (Number(e.target.value) >= 0) {
-              setToInRon(e.target.value)
+              setToInRon(e.target.value);
             }
           }}
           type="number"
@@ -217,16 +223,15 @@ export default function ExchangeFormComponent() {
           required
         />
       </div>
-
-
-    
-      <label htmlFor="amount">Amount ({from ? from : "From"}):</label>
+      <span title="Enter the amount you traded in this transaction using the first (from) instrument. For example, if you traded 1 EUR for BTC, then enter 1." style={{ cursor: "help" }}>
+        Amount ({from ? from : "From"}):
+      </span>
       <input
         placeholder="0"
         value={amount}
         onChange={(e) => {
           if (Number(e.target.value) >= 0) {
-            setAmount(e.target.value)
+            setAmount(e.target.value);
           }
         }}
         type="number"
@@ -234,7 +239,9 @@ export default function ExchangeFormComponent() {
         name="amount"
         required
       />
-      <label htmlFor="date">Date:</label>
+      <span title="Select the precise time at which you made this transaction." style={{ cursor: "help" }}>
+        Date:
+      </span>
       <input
         value={date}
         onChange={(e) => setDate(e.target.value)}
@@ -243,54 +250,7 @@ export default function ExchangeFormComponent() {
         name="date"
         required
       />
-      {feeInputs.map((value, index) => (
-        <div key={index}>
-          <div className="flex justify-between">
-            <div>Fee paid in:</div>
-            <div className="mx-auto">Fee amount:</div>
-            <div>{value.instrument ? value.instrument : "Fee"} price in RON:</div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <select
-              value={value.instrument}
-              onChange={(e) => handleFeeChange(index, e.target.value, "instrument")}
-              className="choice mt-2"
-              required
-            >
-              <option value="" disabled>
-                Select
-              </option>
-              {instruments.map((inst, idx) => (
-                <option key={idx} value={inst}>
-                  {inst}
-                </option>
-              ))}
-            </select>
-            <input
-              placeholder="amount"
-              type="number"
-              value={value.amount}
-              onChange={(e) => {
-                if (Number(e.target.value) >= 0) {
-                  handleFeeChange(index, e.target.value, "amount")
-                }
-              }}
-            />
-            <input
-              placeholder="In RON"
-              type="number"
-              value={value.priceInRON}
-              onChange={(e) => {
-                if (Number(e.target.value) >= 0) {
-                  handleFeeChange(index, e.target.value, "priceInRON")
-                }}
-              }
-            />
-            <button type="button" onClick={()=>{handleRemoveFeeInput(index)}} className="bg-red-500 text-2xl text-white rounded-md w-8 h-8 flex items-center justify-center">🗑</button>
-          </div>
-        </ div>
-      ))}
-      <button type="button" onClick={handleAddFeeInput} className="bg-green-500 text-white rounded-md w-12 h-8 flex items-center justify-center">+Fee</button>
+      <FeeInputsComponent feeInputs={feeInputs} setFeeInputs={setFeeInputs} />
       <div className="button-box">
         <button
           className="Buy button"

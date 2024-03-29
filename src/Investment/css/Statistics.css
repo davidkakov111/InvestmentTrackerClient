@@ -1,0 +1,7 @@
+.bar-chart-container {
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 20px;
+    margin: 0 auto;
+}

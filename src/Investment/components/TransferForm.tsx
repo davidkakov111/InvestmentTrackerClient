@@ -1,18 +1,27 @@
 import { useState } from "react";
 import "../css/Form.css";
 import { cryptos, instruments } from "../Instruments";
+import { FeeInputsComponent } from "./FeeComponent";
 
 type historyInterface = {
-  operation: "TRANSFER",
-  what: string,
-  frominstrument: string,
-  toinstrument: string,
+  operation: "TRANSFER";
+  what: string;
+  frominstrument: string;
+  toinstrument: string;
   fees: string;
-  amount: number,
-  timestamp: number
-}
+  amount: number;
+  timestamp: number;
+};
 
-function validateInputs(from: string, to: string, currency: string, txLink: string, amount: string, feeInputs: any[], date: string) {
+function validateInputs(
+  from: string,
+  to: string,
+  currency: string,
+  txLink: string,
+  amount: string,
+  feeInputs: any[],
+  date: string
+) {
   if (
     !from ||
     !to ||
@@ -26,12 +35,12 @@ function validateInputs(from: string, to: string, currency: string, txLink: stri
     return false;
   }
   for (let fee of feeInputs) {
-    if (!fee.instrument || !fee.amount || !fee.priceInRON) {
-      alert("Fee input(s) can't be empty!")
+    if (!fee.instrument || !fee.amount) {
+      alert("Fee input(s) can't be empty!");
       return false;
     }
   }
-  const oldestTS = new Date('2009-01-03').getTime();
+  const oldestTS = new Date("2009-01-03").getTime();
   const transactionTS = new Date(date).getTime();
   const currentTS = new Date().getTime();
   if (transactionTS < oldestTS || transactionTS > currentTS) {
@@ -48,28 +57,13 @@ export default function TransferFormComponent() {
   const [txLink, setTxLink] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
-  const [feeInputs, setFeeInputs] = useState([{ instrument: '', amount: '', priceInRON:''}]);
-
-  const handleAddFeeInput = () => {
-    setFeeInputs([...feeInputs, { instrument: '', amount: '', priceInRON:''}])
-  };
-
-  const handleRemoveFeeInput = (index: number) => {
-    let array = [...feeInputs]
-    array.splice(index, 1);
-    setFeeInputs(array)
-  };
-
-  const handleFeeChange = (index: number, value: string, field:"instrument"|"priceInRON"|"amount") => {
-    const newInputs = [...feeInputs]
-    newInputs[index][field] = value
-    setFeeInputs(newInputs);
-  };
+  const [feeInputs, setFeeInputs] = useState([{ instrument: "", amount: "" }]);
 
   async function handler() {
-    if(!validateInputs(from, to, currency, txLink, amount, feeInputs, date)) return;
+    if (!validateInputs(from, to, currency, txLink, amount, feeInputs, date))
+      return;
 
-    const timeStamp = new Date(date).getTime()
+    const timeStamp = new Date(date).getTime();
     const newHistory: historyInterface = {
       operation: "TRANSFER",
       what: JSON.stringify([currency, txLink]),
@@ -77,21 +71,19 @@ export default function TransferFormComponent() {
       toinstrument: to,
       fees: JSON.stringify(feeInputs),
       amount: Number(amount),
-      timestamp: timeStamp
-    }
+      timestamp: timeStamp,
+    };
 
-    const response = await fetch('http://localhost:8080/SaveTransaction', 
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json' 
-        },
-        body: JSON.stringify(newHistory)
-      }
-    )
+    const response = await fetch("http://localhost:8080/SaveTransaction", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newHistory),
+    });
     if (!response.ok) {
-      alert("Error saving the transaction! (API -> backend -> API)")
+      alert("Error saving the transaction! (API -> backend -> API)");
       return;
     }
 
@@ -101,15 +93,25 @@ export default function TransferFormComponent() {
     setTxLink("");
     setAmount("");
     setDate("");
-    setFeeInputs([{ instrument: '', amount: '', priceInRON:''}]);
+    setFeeInputs([{ instrument: "", amount: "" }]);
   }
 
   return (
     <div className="investment-form">
-      <div className="form-title">Transfer</div>     
+      <div className="form-title">Transfer</div>
       <div className="flex justify-between">
-        <label htmlFor="from-account">From:</label>
-        <label htmlFor="to-account">To:</label>
+        <span
+          title="Select the starting point for the transfer transaction."
+          style={{ cursor: "help" }}
+        >
+          From:
+        </span>
+        <span
+          title="Select the destination for the transfer transaction."
+          style={{ cursor: "help" }}
+        >
+          To:
+        </span>
       </div>
       <div className="flex items-center space-x-4">
         <select
@@ -148,8 +150,13 @@ export default function TransferFormComponent() {
             {"Wallet"}
           </option>
         </select>
-      </div> 
-      <label htmlFor="transfered-currency">Cryptocurrency:</label>
+      </div>
+      <span
+        title="Select the cryptocurrency you transferred in this transaction."
+        style={{ cursor: "help" }}
+      >
+        Cryptocurrency:
+      </span>
       <select
         value={currency}
         onChange={(e) => setCurrency(e.target.value)}
@@ -167,13 +174,18 @@ export default function TransferFormComponent() {
           </option>
         ))}
       </select>
-      <label htmlFor="transfer-amount">Amount:</label>
+      <span
+        title="Enter the amount of the chosen cryptocurrency to be transferred in this transaction."
+        style={{ cursor: "help" }}
+      >
+        Amount:
+      </span>
       <input
         placeholder="0"
         value={amount}
-        onChange={(e) => { 
+        onChange={(e) => {
           if (Number(e.target.value) >= 0) {
-            setAmount(e.target.value)
+            setAmount(e.target.value);
           }
         }}
         type="number"
@@ -181,16 +193,23 @@ export default function TransferFormComponent() {
         name="transfer-amount"
         required
       />
-      <label htmlFor="tx-link">Transaction link:</label>
-      <input 
+      <span
+        title="Enter the blockchain explorer link of this transaction for evidence."
+        style={{ cursor: "help" }}
+      >
+        Transaction link:
+      </span>
+      <input
         placeholder="https://www.explorer.com"
         value={txLink}
         onChange={(e) => setTxLink(e.target.value)}
-        type="text" 
-        id="tx-link" 
+        type="text"
+        id="tx-link"
         name="tx-link"
       />
-      <label htmlFor="transfer-date">Date:</label>
+      <span title="Select the precise time at which you transferred this transaction." style={{ cursor: "help" }}>
+        Date:
+      </span>
       <input
         value={date}
         onChange={(e) => setDate(e.target.value)}
@@ -199,58 +218,11 @@ export default function TransferFormComponent() {
         name="transfer-date"
         required
       />
-      {feeInputs.map((value, index) => (
-        <div key={index}>
-          <div className="flex justify-between">
-            <div>Fee paid in:</div>
-            <div className="mx-auto">Fee amount:</div>
-            <div>{value.instrument ? value.instrument : "Fee"} price in RON:</div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <select
-              value={value.instrument}
-              onChange={(e) => handleFeeChange(index, e.target.value, "instrument")}
-              className="choice mt-2"
-              required
-            >
-              <option value="" disabled>
-                Select
-              </option>
-              {instruments.map((inst, idx) => (
-                <option key={idx} value={inst}>
-                  {inst}
-                </option>
-              ))}
-            </select>
-            <input
-              placeholder="amount"
-              type="number"
-              value={value.amount}
-              onChange={(e) => {
-                if (Number(e.target.value) >= 0) {
-                  handleFeeChange(index, e.target.value, "amount")
-                }
-              }}
-            />
-            <input
-              placeholder="In RON"
-              type="number"
-              value={value.priceInRON}
-              onChange={(e) => {
-                if (Number(e.target.value) >= 0) {
-                  handleFeeChange(index, e.target.value, "priceInRON")
-                }}
-              }
-            />
-            <button onClick={()=>{handleRemoveFeeInput(index)}} type="button" className="bg-red-500 text-2xl text-white rounded-md w-8 h-8 flex items-center justify-center">🗑</button>
-          </div>
-        </ div>
-      ))}
-      <button onClick={handleAddFeeInput} type="button" className="bg-green-500 text-white rounded-md w-12 h-8 flex items-center justify-center">+Fee</button>
+      <FeeInputsComponent feeInputs={feeInputs} setFeeInputs={setFeeInputs} />
       <button
         className="button transfer-btn"
         onClick={() => {
-        handler();
+          handler();
         }}
       >
         Transfer

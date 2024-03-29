@@ -32,13 +32,14 @@ export function getTax(taxableProfit: number, minimumGrossWage: number) {
   if (taxableProfit > (minimumGrossWage * 24)) {
     CASS = (minimumGrossWage * 24) * 0.1
   }
-  return roundToTwoDecimalPlaces(incomeTax + CASS)
+  return [incomeTax, CASS]
+  // return roundToTwoDecimalPlaces(incomeTax + CASS)
 }
 
 export function ballanceAndProfitByCrypto(history: any[]) {
   let averageBuyPrice: averageBuyPrice = averageBuyPriceAndBallance(history)
   let profitLoss: ballanceWithProfit = RealizedProfitAndLoss(history, averageBuyPrice)
-  const currentBallancesAndProfits = FeesDeducter(history, profitLoss)
+  const currentBallancesAndProfits = FeesDeducter(history, profitLoss, averageBuyPrice)
   return currentBallancesAndProfits
 }
 
@@ -76,27 +77,28 @@ function RealizedProfitAndLoss(history: any[], averageBuyPrice: averageBuyPrice)
   return ballanceProfit;
 }
 
-function FeesDeducter(history: any[], ballanceWithProfit: ballanceWithProfit) {
+function FeesDeducter(history: any[], ballanceWithProfit: ballanceWithProfit, averageBuyPrice: averageBuyPrice) {
   let result = {...ballanceWithProfit}
   for (let i of history) {
     const fee = JSON.parse(i.fees)
     for (let j of fee) {
-      const feeInRON = Number(j.amount) * Number(j.priceInRON)
       if (!fiats.includes(j.instrument)) {
+        const feeInRON = Number(j.amount) * Number(averageBuyPrice[j.instrument].avPrice)
         result[j.instrument] = {
           ballance: result[j.instrument].ballance - Number(j.amount), 
           profit: result[j.instrument].profit - feeInRON
         }
       } else {
+        const fiatFeeInRON = Number(j.amount) * Number(i.frominron)
         if (result["fiatFees"]) {
           result["fiatFees"] = {
             ballance: 0, 
-            profit: result["fiatFees"].profit - feeInRON
+            profit: result["fiatFees"].profit - fiatFeeInRON
           }
         } else {
           result["fiatFees"] = {
             ballance: 0, 
-            profit:  -1 * feeInRON
+            profit:  -1 * fiatFeeInRON
           }
         }
       }
