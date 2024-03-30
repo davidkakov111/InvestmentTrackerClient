@@ -41,10 +41,9 @@ const SignUpForm = () => {
       email: formData.email,
       password: formData.password
     }
-
-    const response = await fetch("https://investment-tracker-server.vercel.app/SaveUser", {
+    
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/SaveUser`, {
       method: "POST",
-      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
       },
@@ -60,6 +59,11 @@ const SignUpForm = () => {
     if (!response.ok) {
       alert("Error saving the new user! (API -> backend -> API)");
       return;
+    }
+
+    const JWT = response.headers.get('Authorization');
+    if (JWT) {
+      localStorage.setItem('JWTToken', JWT);
     }
 
     // Clean up 

@@ -24,19 +24,22 @@ export const UserContextProvider: React.FC<UserCPProps> = ({children}) => {
     const [user, setUser] = useState({isAuthenticated: false, email: ""})
 
     useEffect(()=>{
-        const getUser = async () => {
-            const response = await fetch("https://investment-tracker-server.vercel.app/GetUserContext", {
-                method: "GET",
-                credentials: 'include',
-            });
-
-            const result = await response.json()
-            
-            if (response.ok) {
-                setUser({isAuthenticated: true, email: result.result})
+        const JWT = localStorage.getItem('JWTToken');
+        if (JWT) {
+            const getUser = async () => {
+                const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/GetUserContext`, {
+                    method: "GET",
+                    headers: {
+                        "Authorization": JWT
+                    }
+                });
+                const result = await response.json()
+                if (response.ok) {
+                    setUser({isAuthenticated: true, email: result.result})
+                }
             }
+            getUser()
         }
-        getUser()
     }, [])
 
     return(

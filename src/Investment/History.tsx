@@ -7,7 +7,15 @@ export default function HistoryTable() {
     useEffect(()=>{
         async function fetchData() {
             try {
-              const response = await fetch('https://investment-tracker-server.vercel.app/GetTransactions', {credentials: 'include'});
+              const JWTToken = localStorage.getItem('JWTToken');
+              if (!JWTToken) {alert("Please SignIn first!"); return}  
+                
+              const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/GetTransactions`, {
+                method: "GET",
+                headers: {
+                    "Authorization": JWTToken
+                },
+              });
               if (!response.ok) {
                 alert('Failed to fetch transactions history');
               }

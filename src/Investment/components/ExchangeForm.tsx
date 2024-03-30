@@ -110,11 +110,14 @@ export default function ExchangeFormComponent() {
       timestamp: timeStamp,
     };
 
-    const response = await fetch("https://investment-tracker-server.vercel.app/SaveTransaction", {
+    const JWTToken = localStorage.getItem('JWTToken');
+    if (!JWTToken) {alert("Please SignIn first!"); return}  
+
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/SaveTransaction`, {
       method: "POST",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": JWTToken
       },
       body: JSON.stringify(newHistory),
     });

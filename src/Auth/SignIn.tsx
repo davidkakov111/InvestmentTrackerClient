@@ -36,15 +36,14 @@ const SignInForm = () => {
       password: formData.password
     }
 
-    const response = await fetch("https://investment-tracker-server.vercel.app/SignInUser", {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/SignInUser`, {
       method: "POST",
-      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newUser),
     });
-
+    
     const result = await response.json();
     
     if (!response.ok) {
@@ -58,7 +57,12 @@ const SignInForm = () => {
       alert("Incorrect password!")
       return;
     }
-  
+    
+    const JWT = response.headers.get('Authorization');
+    if (JWT) {
+      localStorage.setItem('JWTToken', JWT);
+    }
+    
     // Clean up 
     setFormData({ email: '', password: ''});
     
