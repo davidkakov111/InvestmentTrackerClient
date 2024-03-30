@@ -110,7 +110,7 @@ export default function ExchangeFormComponent() {
       timestamp: timeStamp,
     };
 
-    const response = await fetch("http://localhost:8080/SaveTransaction", {
+    const response = await fetch("https://investment-tracker-server.vercel.app/SaveTransaction", {
       method: "POST",
       credentials: "include",
       headers: {

@@ -25,7 +25,7 @@ export const UserContextProvider: React.FC<UserCPProps> = ({children}) => {
 
     useEffect(()=>{
         const getUser = async () => {
-            const response = await fetch("http://localhost:8080/GetUserContext", {
+            const response = await fetch("https://investment-tracker-server.vercel.app/GetUserContext", {
                 method: "GET",
                 credentials: 'include',
             });

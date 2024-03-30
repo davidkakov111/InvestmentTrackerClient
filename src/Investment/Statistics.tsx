@@ -17,7 +17,7 @@ export function StatisticsComponent() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("http://localhost:8080/GetTransactions", {
+        const response = await fetch("https://investment-tracker-server.vercel.app/GetTransactions", {
           credentials: "include",
         });
         if (!response.ok) {

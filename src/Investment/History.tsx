@@ -7,7 +7,7 @@ export default function HistoryTable() {
     useEffect(()=>{
         async function fetchData() {
             try {
-              const response = await fetch('http://localhost:8080/GetTransactions', {credentials: 'include'});
+              const response = await fetch('https://investment-tracker-server.vercel.app/GetTransactions', {credentials: 'include'});
               if (!response.ok) {
                 alert('Failed to fetch transactions history');
               }

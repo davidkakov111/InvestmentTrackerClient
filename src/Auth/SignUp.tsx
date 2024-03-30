@@ -42,7 +42,7 @@ const SignUpForm = () => {
       password: formData.password
     }
 
-    const response = await fetch("http://localhost:8080/SaveUser", {
+    const response = await fetch("https://investment-tracker-server.vercel.app/SaveUser", {
       method: "POST",
       credentials: 'include',
       headers: {
