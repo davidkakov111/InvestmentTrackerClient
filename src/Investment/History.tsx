@@ -1,77 +1,76 @@
-import { useEffect, useState } from "react"
-import './css/History.css'
+import { useEffect, useState } from "react";
+import "./css/History.css";
+import {
+  EditTableRow,
+  RegularTableRow,
+  TableHead,
+} from "./components/HistoryComponents/HistoryComponents";
+import { BodyTransaction } from "./components/HistoryComponents/interfaces";
+import { fetchTransactionHistory } from "./components/HistoryComponents/HisTrxOperations";
 
 export default function HistoryTable() {
-    const [history, setHistory] = useState<any[]>();
+  const [history, setHistory] = useState<any[]>();
+  const [editId, setEditId] = useState<number>(-1);
 
-    useEffect(()=>{
-        async function fetchData() {
-            try {
-              const JWTToken = localStorage.getItem('JWTToken');
-              if (!JWTToken) {alert("Please SignIn first!"); return}  
-                
-              const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/GetTransactions`, {
-                method: "GET",
-                headers: {
-                    "Authorization": JWTToken
-                },
-              });
-              if (!response.ok) {
-                alert('Failed to fetch transactions history');
-              }
-              // Parse the JSON response
-              const transactions: any[] = await response.json();
-              // Sort it to cronological order   
-              if (transactions.length > 1) {
-                transactions.sort((a, b) => {
-                    return Number(a.timestamp) - Number(b.timestamp);
-                });
-              }
-              setHistory(transactions)
-            } catch (error) {
-              // Handle any errors that occurred during the fetch
-              console.error('Error fetching transactions:', error);
-            }
-        }
-        fetchData();
-    }, [])
+  useEffect(() => {
+    async function fetchData() {
+      const trHistory = await fetchTransactionHistory();
+      if (trHistory) setHistory(trHistory);
+    }
+    fetchData();
+  }, []);
 
-    return (
-        <>
-            <table className="history-table">
-                <thead>
-                    <tr>
-                        <th>Nr</th>
-                        <th>Operation type</th>
-                        <th>From</th>
-                        <th>To</th>
-                        <th>From (RON)</th>
-                        <th>To (RON)</th>
-                        <th>Fee (RON)</th>
-                        <th>Amount (From)</th>
-                        <th>Transfered</th>
-                        <th>TSIG</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {history?.map((transaction, index) => (
-                        <tr key={transaction.id}>
-                            <td className={transaction.operation}>{index+1}</td>
-                            <td className={transaction.operation}>{transaction.operation}</td>
-                            <td className={transaction.operation}>{transaction.frominstrument}</td>
-                            <td className={transaction.operation}>{transaction.toinstrument}</td>
-                            <td className={transaction.operation}>{transaction.frominron}</td>
-                            <td className={transaction.operation}>{transaction.toinron}</td>
-                            <td className={transaction.operation}>{transaction.fees}</td>
-                            <td className={transaction.operation}>{transaction.amount}</td>
-                            <td className={transaction.operation}>{transaction.what ? JSON.parse(transaction.what)[0] : ""}</td>
-                            <td className={transaction.operation}>{transaction.what ? JSON.parse(transaction.what)[1] : ""}</td>
-                            <td className={transaction.operation}>{String(new Date(Number(transaction.timestamp)).toLocaleString())}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </>
-    );
+  function updateHistoryState(
+    transaction: BodyTransaction,
+    index: number,
+    del: Boolean
+  ) {
+    if (!history) return;
+    const historyCopy = [...history];
+    if (del) {
+      historyCopy.splice(index, 1);
+      setHistory(historyCopy);
+      return;
+    }
+    historyCopy[index] = {
+      id: transaction.id,
+      operation: transaction.operation,
+      what: transaction.what,
+      frominstrument: transaction.frominstrument,
+      toinstrument: transaction.toinstrument,
+      frominron: transaction.frominron,
+      toinron: transaction.toinron,
+      fees: transaction.fees,
+      amount: transaction.amount,
+      timestamp: transaction.timestamp,
+      user_email: historyCopy[index].user_email,
+    };
+    setHistory(historyCopy);
+  }
+
+  return (
+    <>
+      <table className="history-table">
+        <TableHead />
+        <tbody>
+          {history?.map((transaction, index) =>
+            transaction.id !== editId ? (
+              <RegularTableRow
+                transaction={transaction}
+                mapIndex={index}
+                setEditId={setEditId}
+              />
+            ) : (
+              <EditTableRow
+                transaction={transaction}
+                mapIndex={index}
+                setEditId={setEditId}
+                updateHistoryState={updateHistoryState}
+              />
+            )
+          )}
+        </tbody>
+      </table>
+    </>
+  );
 }

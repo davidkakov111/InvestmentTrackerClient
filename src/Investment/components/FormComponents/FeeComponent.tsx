@@ -1,5 +1,5 @@
-import { instruments } from "../Instruments";
-
+import { instruments } from "../../Instruments";
+import "../../css/Form.css";
 interface feeInputs {
   instrument: string;
   amount: string;
@@ -42,7 +42,11 @@ export const FeeInputsComponent: React.FC<FeeInputsComponentProps> = ({
             >
               Fee paid in:
             </span>
-            <span title="Enter the quantity you paid with this instrument for this transaction." className="mx-auto" style={{ cursor: "help" }}>
+            <span
+              title="Enter the quantity you paid with this instrument for this transaction."
+              className="mx-auto"
+              style={{ cursor: "help" }}
+            >
               Fee amount:
             </span>
           </div>

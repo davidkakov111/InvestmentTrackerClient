@@ -1,5 +1,5 @@
-import ExchangeFormComponent from "./components/ExchangeForm"
-import TransferFormComponent from "./components/TransferForm"
+import ExchangeFormComponent from "./components/FormComponents/ExchangeForm";
+import TransferFormComponent from "./components/FormComponents/TransferForm";
 
 export default function InvestForm() {
   return (
@@ -11,5 +11,5 @@ export default function InvestForm() {
         <TransferFormComponent />
       </div>
     </div>
-  )
+  );
 }

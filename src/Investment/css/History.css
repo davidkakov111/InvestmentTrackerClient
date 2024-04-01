@@ -35,3 +35,6 @@ td {
 .TRANSFER {
     color: rgb(109, 65, 156);
 }
+.edit-btn {
+    cursor: pointer;
+}

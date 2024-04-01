@@ -1,6 +1,6 @@
 import { useState } from "react";
-import "../css/Form.css";
-import { cryptos, instruments } from "../Instruments";
+import "../../css/Form.css";
+import { cryptos } from "../../Instruments";
 import { FeeInputsComponent } from "./FeeComponent";
 
 type historyInterface = {
@@ -74,17 +74,23 @@ export default function TransferFormComponent() {
       timestamp: timeStamp,
     };
 
-    const JWTToken = localStorage.getItem('JWTToken');
-    if (!JWTToken) {alert("Please SignIn first!"); return}  
+    const JWTToken = localStorage.getItem("JWTToken");
+    if (!JWTToken) {
+      alert("Please SignIn first!");
+      return;
+    }
 
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/SaveTransaction`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": JWTToken
-      },
-      body: JSON.stringify(newHistory),
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_API}/SaveTransaction`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: JWTToken,
+        },
+        body: JSON.stringify(newHistory),
+      }
+    );
     if (!response.ok) {
       alert("Error saving the transaction! (API -> backend -> API)");
       return;
@@ -210,7 +216,10 @@ export default function TransferFormComponent() {
         id="tx-link"
         name="tx-link"
       />
-      <span title="Select the precise time at which you transferred this transaction." style={{ cursor: "help" }}>
+      <span
+        title="Select the precise time at which you transferred this transaction."
+        style={{ cursor: "help" }}
+      >
         Date:
       </span>
       <input

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import "../css/Form.css";
-import { fiats, instruments } from "../Instruments";
+import "../../css/Form.css";
+import { fiats, instruments } from "../../Instruments";
 import { FeeInputsComponent } from "./FeeComponent";
 
 type historyInterface = {
@@ -110,17 +110,23 @@ export default function ExchangeFormComponent() {
       timestamp: timeStamp,
     };
 
-    const JWTToken = localStorage.getItem('JWTToken');
-    if (!JWTToken) {alert("Please SignIn first!"); return}  
+    const JWTToken = localStorage.getItem("JWTToken");
+    if (!JWTToken) {
+      alert("Please SignIn first!");
+      return;
+    }
 
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_API}/SaveTransaction`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": JWTToken
-      },
-      body: JSON.stringify(newHistory),
-    });
+    const response = await fetch(
+      `${process.env.REACT_APP_BACKEND_API}/SaveTransaction`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: JWTToken,
+        },
+        body: JSON.stringify(newHistory),
+      }
+    );
     if (!response.ok) {
       alert("Error saving the transaction! (API -> backend -> API)");
       return;
@@ -145,7 +151,10 @@ export default function ExchangeFormComponent() {
         >
           From:
         </span>
-        <span title="Enter the price of this instrument (fiat currency or cryptocurrency) in RON (Romanian Leu)." style={{ cursor: "help" }}>
+        <span
+          title="Enter the price of this instrument (fiat currency or cryptocurrency) in RON (Romanian Leu)."
+          style={{ cursor: "help" }}
+        >
           {from ? from : "From"} Price In RON:
         </span>
       </div>
@@ -189,7 +198,10 @@ export default function ExchangeFormComponent() {
         >
           To:
         </span>
-        <span title="Enter the price of this instrument (fiat currency or cryptocurrency) in RON (Romanian Leu)." style={{ cursor: "help" }}>
+        <span
+          title="Enter the price of this instrument (fiat currency or cryptocurrency) in RON (Romanian Leu)."
+          style={{ cursor: "help" }}
+        >
           {to ? to : "To"} Price In RON:
         </span>
       </div>
@@ -226,7 +238,10 @@ export default function ExchangeFormComponent() {
           required
         />
       </div>
-      <span title="Enter the amount you traded in this transaction using the first (from) instrument. For example, if you traded 1 EUR for BTC, then enter 1." style={{ cursor: "help" }}>
+      <span
+        title="Enter the amount you traded in this transaction using the first (from) instrument. For example, if you traded 1 EUR for BTC, then enter 1."
+        style={{ cursor: "help" }}
+      >
         Amount ({from ? from : "From"}):
       </span>
       <input
@@ -242,7 +257,10 @@ export default function ExchangeFormComponent() {
         name="amount"
         required
       />
-      <span title="Select the precise time at which you made this transaction." style={{ cursor: "help" }}>
+      <span
+        title="Select the precise time at which you made this transaction."
+        style={{ cursor: "help" }}
+      >
         Date:
       </span>
       <input
