@@ -24,6 +24,7 @@ export const NavbarComponent: React.FC<NavbarComponentProps> = ({
             Home
           </Link>
           <button
+            title="navbarButton"
             onClick={() => {
               setIsOpen(!isOpen);
             }}

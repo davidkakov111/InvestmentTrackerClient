@@ -90,6 +90,7 @@ const SignUpForm = () => {
               Email address
             </label>
             <input
+              autoComplete='off'
               placeholder='john@mail.com'
               type="email"
               id="email"
@@ -104,6 +105,7 @@ const SignUpForm = () => {
               Password
             </label>
             <input
+              autoComplete='off'
               placeholder='Keep it secret'
               type="password"
               id="password"
@@ -118,6 +120,7 @@ const SignUpForm = () => {
               Password again
             </label>
             <input
+              autoComplete='off'
               placeholder='Keep it secret'
               type="password"
               id="passwordAgain"

@@ -33,7 +33,6 @@ export function getTax(taxableProfit: number, minimumGrossWage: number) {
     CASS = (minimumGrossWage * 24) * 0.1
   }
   return [incomeTax, CASS]
-  // return roundToTwoDecimalPlaces(incomeTax + CASS)
 }
 
 export function ballanceAndProfitByCrypto(history: any[]) {

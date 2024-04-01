@@ -165,6 +165,7 @@ export default function ExchangeFormComponent() {
           className="choice mt-2"
           id="from"
           name="from"
+          title="from"
           required
         >
           <option value="" disabled>
@@ -187,6 +188,7 @@ export default function ExchangeFormComponent() {
           type="number"
           id="from-in-ron"
           name="from-in-ron"
+          title="from-in-ron"
           step="0.01"
           required
         />
@@ -212,6 +214,7 @@ export default function ExchangeFormComponent() {
           className="choice mt-2"
           id="to"
           name="to"
+          title="to"
           required
         >
           <option value="" disabled>
@@ -234,6 +237,7 @@ export default function ExchangeFormComponent() {
           type="number"
           id="to-in-ron"
           name="to-in-ron"
+          title="to-in-ron"
           step="0.01"
           required
         />
@@ -255,6 +259,7 @@ export default function ExchangeFormComponent() {
         type="number"
         id="amount"
         name="amount"
+        title="amount"
         required
       />
       <span
@@ -269,6 +274,7 @@ export default function ExchangeFormComponent() {
         type="datetime-local"
         id="date"
         name="date"
+        title="date"
         required
       />
       <FeeInputsComponent feeInputs={feeInputs} setFeeInputs={setFeeInputs} />

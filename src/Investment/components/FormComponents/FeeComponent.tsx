@@ -52,6 +52,8 @@ export const FeeInputsComponent: React.FC<FeeInputsComponentProps> = ({
           </div>
           <div className="flex items-center space-x-4">
             <select
+              name={`feeInstrument${index}`}
+              title={`feeInstrument${index}`}
               value={value.instrument}
               onChange={(e) =>
                 handleFeeChange(index, e.target.value, "instrument")
@@ -69,6 +71,8 @@ export const FeeInputsComponent: React.FC<FeeInputsComponentProps> = ({
               ))}
             </select>
             <input
+              name={`feeAmount${index}`}
+              title={`feeAmount${index}`}
               placeholder="amount"
               type="number"
               value={value.amount}

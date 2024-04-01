@@ -129,6 +129,7 @@ export default function TransferFormComponent() {
           className="choice"
           id="from-account"
           name="from-account"
+          title="from-account"
           required
         >
           <option value="" disabled>
@@ -147,6 +148,7 @@ export default function TransferFormComponent() {
           className="choice"
           id="to-account"
           name="to-account"
+          title="to-account"
           required
         >
           <option value="" disabled>
@@ -172,6 +174,7 @@ export default function TransferFormComponent() {
         className="choice"
         id="transfered-currency"
         name="transfered-currency"
+        title="transfered-currency"
         required
       >
         <option value="" disabled>
@@ -200,6 +203,7 @@ export default function TransferFormComponent() {
         type="number"
         id="transfer-amount"
         name="transfer-amount"
+        title="transfer-amount"
         required
       />
       <span
@@ -215,6 +219,7 @@ export default function TransferFormComponent() {
         type="text"
         id="tx-link"
         name="tx-link"
+        title="tx-link"
       />
       <span
         title="Select the precise time at which you transferred this transaction."
@@ -228,6 +233,7 @@ export default function TransferFormComponent() {
         type="datetime-local"
         id="transfer-date"
         name="transfer-date"
+        title="transfer-date"
         required
       />
       <FeeInputsComponent feeInputs={feeInputs} setFeeInputs={setFeeInputs} />

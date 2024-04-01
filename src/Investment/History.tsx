@@ -59,6 +59,7 @@ export default function HistoryTable() {
                 transaction={transaction}
                 mapIndex={index}
                 setEditId={setEditId}
+                key={index}
               />
             ) : (
               <EditTableRow
@@ -66,6 +67,7 @@ export default function HistoryTable() {
                 mapIndex={index}
                 setEditId={setEditId}
                 updateHistoryState={updateHistoryState}
+                key={index}
               />
             )
           )}

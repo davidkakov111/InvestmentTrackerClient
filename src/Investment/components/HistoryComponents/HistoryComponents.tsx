@@ -35,7 +35,7 @@ export const RegularTableRow: React.FC<RegularTableRowComponentProps> = ({
   mapIndex,
 }) => {
   return (
-    <tr key={transaction.id}>
+    <tr>
       <td className={transaction.operation}>{mapIndex + 1}</td>
       <td className={transaction.operation}>{transaction.operation}</td>
       <td className={transaction.operation}>{transaction.frominstrument}</td>
@@ -99,7 +99,7 @@ export const EditTableRow: React.FC<EditTableRowComponentProps> = ({
   }
   
   return (
-    <tr key={currentTransaction.id}>
+    <tr>
       <td className={currentTransaction.operation}>{mapIndex + 1}</td>
       <td className={currentTransaction.operation}>
         <select
@@ -257,9 +257,10 @@ export const EditTableRow: React.FC<EditTableRowComponentProps> = ({
           value={moment(currentTransaction.timestamp).format(
             "YYYY-MM-DDTHH:mm"
           )}
-          onChange={(e) =>
+          onChange={(e) =>{
+          if (e.target.value) {
             handleChange("timestamp", new Date(e.target.value).getTime())
-          }
+          }}}
           type="datetime-local"
           id="timestamp"
           name="timestamp"

@@ -87,6 +87,7 @@ const SignInForm = () => {
               Email address
             </label>
             <input
+              autoComplete='off'
               placeholder='john@mail.com'
               type="email"
               id="email"
@@ -101,6 +102,7 @@ const SignInForm = () => {
               Password
             </label>
             <input
+              autoComplete='off'
               placeholder='Just you know'
               type="password"
               id="password"
@@ -112,7 +114,10 @@ const SignInForm = () => {
           </div>
           <button
             type="button"
-            onClick={handleSignIn}
+            onClick={(e) => {
+              e.preventDefault()
+              handleSignIn()
+            }}
             className="w-full mt-1 bg-green-600 text-white p-2 rounded-md hover:bg-green-700"
           >
             Sign In
