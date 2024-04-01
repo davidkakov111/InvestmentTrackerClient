@@ -9,11 +9,12 @@ import "./index.css";
 import { UserContextProvider } from './Context/UserContext';
 import { NotRequireSignIn, RequireSignIn } from './mainComponents/RequireSignIn';
 import { StatisticsComponent } from './Investment/Statistics';
+import HomeComponent from './home';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <NavbarComponent><h1 className='text-green-500 text-3xl text-center'>Home</h1></NavbarComponent>
+    element: <NavbarComponent><HomeComponent/></NavbarComponent>
   },
   {
     path: "/signup",

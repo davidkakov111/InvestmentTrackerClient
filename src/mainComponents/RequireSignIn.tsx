@@ -2,6 +2,7 @@ import React, { ReactNode, useContext } from "react";
 import { UserContext } from "../Context/UserContext";
 import { NavbarComponent } from "./Navbar";
 import SignUpForm from "../Auth/SignUp";
+import HomeComponent from "../home";
 
 interface childrenProp {
   children: ReactNode;
@@ -21,7 +22,7 @@ export const NotRequireSignIn: React.FC<childrenProp> = ({children}) => {
     const {user, setUser} = useContext(UserContext);
     
     if (user.isAuthenticated) { 
-        return <NavbarComponent><h1 className='text-green-500 text-3xl text-center'>Home</h1></NavbarComponent>
+        return <NavbarComponent><HomeComponent/></NavbarComponent>
     } else {
         return <>{children}</>
     }

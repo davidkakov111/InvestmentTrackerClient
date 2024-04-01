@@ -21,7 +21,7 @@ export function TableHead() {
         <th>Fee (RON)</th>
         <th>Amount (From)</th>
         <th>Transfered</th>
-        <th>TSIG</th>
+        <th>TxLink</th>
         <th>Date</th>
         <th>Edit</th>
       </tr>

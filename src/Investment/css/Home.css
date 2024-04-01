@@ -1,0 +1,15 @@
+.dark-glass {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px);
+    min-height: 91%;
+    color: rgb(137, 253, 137);
+}
+.get-started-btn {
+    background: linear-gradient(to right, #4CAF50, #008000);
+    color: rgb(214, 255, 209);
+}
+.get-started-btn:hover {
+    background: linear-gradient(to right, #008000, #4CAF50);
+}
