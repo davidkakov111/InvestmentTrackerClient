@@ -7,6 +7,8 @@ import {
 } from "./components/HistoryComponents/HistoryComponents";
 import { BodyTransaction } from "./components/HistoryComponents/interfaces";
 import { fetchTransactionHistory } from "./components/HistoryComponents/HisTrxOperations";
+import { DeleteTransactionHistory } from "./components/HistoryComponents/DropHistory";
+import { NoTrHistoryWinow } from "../mainComponents/NoTrHistory";
 
 export default function HistoryTable() {
   const [history, setHistory] = useState<any[]>();
@@ -50,29 +52,40 @@ export default function HistoryTable() {
 
   return (
     <>
-      <table className="history-table">
-        <TableHead />
-        <tbody>
-          {history?.map((transaction, index) =>
-            transaction.id !== editId ? (
-              <RegularTableRow
-                transaction={transaction}
-                mapIndex={index}
-                setEditId={setEditId}
-                key={index}
-              />
-            ) : (
-              <EditTableRow
-                transaction={transaction}
-                mapIndex={index}
-                setEditId={setEditId}
-                updateHistoryState={updateHistoryState}
-                key={index}
-              />
-            )
-          )}
-        </tbody>
-      </table>
+      {history && history.length > 0 ? (
+        <>
+          <table className="history-table">
+            <TableHead />
+            <tbody>
+              {history?.map((transaction, index) =>
+                transaction.id !== editId ? (
+                  <RegularTableRow
+                    transaction={transaction}
+                    mapIndex={index}
+                    setEditId={setEditId}
+                    key={index}
+                  />
+                ) : (
+                  <EditTableRow
+                    transaction={transaction}
+                    mapIndex={index}
+                    setEditId={setEditId}
+                    updateHistoryState={updateHistoryState}
+                    key={index}
+                  />
+                )
+              )}
+            </tbody>
+          </table>
+          <DeleteTransactionHistory
+            deleteHistoryState={() => {
+              setHistory([]);
+            }}
+          />
+        </>
+      ) : (
+        <NoTrHistoryWinow title="No transaction history found!" subtitle="Start tracking your transactions now."/>
+      )}
     </>
   );
 }

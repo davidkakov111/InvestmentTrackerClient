@@ -33,3 +33,7 @@ export interface BodyTransaction extends BaseTransaction {
     frominron: number | null;
     toinron: number | null;
 }
+
+export interface DeleteTransactionHistoryProps {
+    deleteHistoryState: ()=>void;
+}
