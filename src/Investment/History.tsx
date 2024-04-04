@@ -9,15 +9,18 @@ import { BodyTransaction } from "./components/HistoryComponents/interfaces";
 import { fetchTransactionHistory } from "./components/HistoryComponents/HisTrxOperations";
 import { DeleteTransactionHistory } from "./components/HistoryComponents/DropHistory";
 import { NoTrHistoryWinow } from "../mainComponents/NoTrHistory";
+import LoadingComponent from "../mainComponents/LoadingComponent";
 
 export default function HistoryTable() {
   const [history, setHistory] = useState<any[]>();
   const [editId, setEditId] = useState<number>(-1);
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     async function fetchData() {
       const trHistory = await fetchTransactionHistory();
       if (trHistory) setHistory(trHistory);
+      setLoading(false);
     }
     fetchData();
   }, []);
@@ -49,6 +52,8 @@ export default function HistoryTable() {
     };
     setHistory(historyCopy);
   }
+
+  if (loading) return <LoadingComponent/>
 
   return (
     <>

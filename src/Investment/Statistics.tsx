@@ -3,17 +3,19 @@ import { useEffect, useState } from "react";
 import {
   getTotalInvestedAmount,
   getTax,
-  ballanceAndProfitByCrypto,
+  ProfitByCrypto,
   roundToTwoDecimalPlaces,
 } from "./Utils/StatisticsFunctions";
 import "./css/Statistics.css";
 import { NoTrHistoryWinow } from "../mainComponents/NoTrHistory";
+import LoadingComponent from "../mainComponents/LoadingComponent";
 
 export function StatisticsComponent() {
   const [history, setHistory] = useState<any[]>([]);
   const [minimumGrossWage, setMinimumGrossWage] = useState<string>("");
   const [taxableProfit, setTaxableProfit] = useState<number>(0);
-  const [ballancesAndProfit, setBallancesAndProfit] = useState<any[]>();
+  const [Profits, setProfits] = useState<any[]>();
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -39,30 +41,32 @@ export function StatisticsComponent() {
           });
         }
 
-        const currentBallancesAndProfits =
-          ballanceAndProfitByCrypto(transactions);
+        const currentProfits =
+          ProfitByCrypto(transactions);
 
         let TaxableProfit = 0;
         let chartData = [];
-        for (let i in currentBallancesAndProfits) {
-          const current = currentBallancesAndProfits[i];
-          TaxableProfit += current.profit;
+        for (let i in currentProfits) {
+          const current = currentProfits[i];
+          TaxableProfit += current;
           if (i !== "fiatFees") {
-            const ballance = current.ballance;
-            const profit = roundToTwoDecimalPlaces(current.profit);
-            chartData.push({ asset: i, ballance: ballance, profit: profit });
+            const profit = roundToTwoDecimalPlaces(current);
+            chartData.push({ asset: i, profit: profit });
           }
         }
 
         setHistory(transactions);
-        setBallancesAndProfit(chartData);
+        setProfits(chartData);
         setTaxableProfit(roundToTwoDecimalPlaces(TaxableProfit));
       } catch (error) {
         console.error("Error fetching transactions or calculating statistics:", error);
       }
+      setLoading(false)
     }
     fetchData();
   }, []);
+
+  if (loading) return <LoadingComponent/>
 
   // Defining width for charts
   const barcontainerWidth =
@@ -124,34 +128,13 @@ export function StatisticsComponent() {
           className="justify-center bar-chart-container pt-5 pr-5 border-2 border-green-500"
         >
           <p className="text-green-500 text-center text-2xl pb-3">
-            Ballances / Asset
-          </p>
-          <br />
-          <BarChart
-            width={barcontainerWidth}
-            height={barcontainerWidth / 2.5}
-            data={ballancesAndProfit}
-          >
-            <XAxis dataKey="asset" />
-            <YAxis dataKey="ballance" />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="ballance" fill="green" opacity={1} />
-          </BarChart>
-        </div>
-        <br />
-        <div
-          style={{ width: barcontainerWidth }}
-          className="justify-center bar-chart-container pt-5 pr-5 border-2 border-green-500"
-        >
-          <p className="text-green-500 text-center text-2xl pb-3">
             Realized profit in RON / Asset
           </p>
           <br />
           <BarChart
             width={barcontainerWidth}
             height={barcontainerWidth / 2.5}
-            data={ballancesAndProfit}
+            data={Profits}
           >
             <XAxis dataKey="asset" />
             <YAxis dataKey="profit" />

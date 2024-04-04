@@ -62,7 +62,7 @@ export const DeleteTransactionHistory: React.FC<DeleteTransactionHistoryProps> =
         <div className="flex justify-center items-center">
           <button onClick={() => {if (window.confirm("Are you sure you want to delete All Transaction History?")) {
                 setDel(!del)
-            }}} className="mt-4 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">
+            }}} className="mt-4 mb-4 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline">
             Delete All Transaction History
           </button>
         </div> 

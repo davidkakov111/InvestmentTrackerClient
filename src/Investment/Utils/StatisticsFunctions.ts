@@ -3,15 +3,16 @@ import { fiats } from "../Instruments";
 interface averageBuyPrice {
   [key: string]: {avPrice: number, amount: number}
 }
-interface ballanceWithProfit{
-  [key: string]: {ballance: number, profit: number }
+interface profits{
+  [key: string]: number
 }
 
 export function getTotalInvestedAmount (history: any[]) {
   let investedAmount = 0
   for (let i of history) {
     if (i.operation === "BUY") {
-      investedAmount += (Number(i.amount) * Number(i.frominron)) // I need to solve this  + Number(i.fees)
+      investedAmount += (Number(i.amount) * Number(i.frominron))
+      // investedAmount += fees
     }
   }
   return roundToTwoDecimalPlaces(investedAmount);
@@ -35,11 +36,11 @@ export function getTax(taxableProfit: number, minimumGrossWage: number) {
   return [incomeTax, CASS]
 }
 
-export function ballanceAndProfitByCrypto(history: any[]) {
+export function ProfitByCrypto(history: any[]) {
   let averageBuyPrice: averageBuyPrice = averageBuyPriceAndBallance(history)
-  let profitLoss: ballanceWithProfit = RealizedProfitAndLoss(history, averageBuyPrice)
-  const currentBallancesAndProfits = FeesDeducter(history, profitLoss, averageBuyPrice)
-  return currentBallancesAndProfits
+  let profitLoss: profits = RealizedProfitAndLoss(history, averageBuyPrice)
+  const Profits = FeesDeducter(history, profitLoss, averageBuyPrice)
+  return Profits
 }
 
 function averageBuyPriceAndBallance(history: any[]) {
@@ -47,12 +48,12 @@ function averageBuyPriceAndBallance(history: any[]) {
   for (let i of history) {
     if (i.operation === "BUY" || i.operation === "EXCHANGE") {
       if (averageBuyPrice[i.toinstrument]) {
-        const alreadyPaid = (Number(averageBuyPrice[i.toinstrument].avPrice) * Number(averageBuyPrice[i.toinstrument].amount)) + (Number(i.amount) * Number(i.frominron))
-        const amount = Number(averageBuyPrice[i.toinstrument].amount) + ((Number(i.amount) * Number(i.frominron)) / Number(i.toinron))
+        const alreadyPaid = (averageBuyPrice[i.toinstrument].avPrice * averageBuyPrice[i.toinstrument].amount) + (i.amount * i.frominron)
+        const amount = averageBuyPrice[i.toinstrument].amount + ((i.amount * i.frominron) / i.toinron)
         const avPrice = alreadyPaid / amount
         averageBuyPrice[i.toinstrument] = {avPrice: avPrice, amount: amount}
       } else {
-        averageBuyPrice[i.toinstrument] = {avPrice: i.toinron, amount: (Number(i.amount) * Number(i.frominron)) / Number(i.toinron)}
+        averageBuyPrice[i.toinstrument] = {avPrice: i.toinron, amount: (i.amount * i.frominron) / i.toinron}
       }
     }
   }
@@ -60,45 +61,38 @@ function averageBuyPriceAndBallance(history: any[]) {
 }
 
 function RealizedProfitAndLoss(history: any[], averageBuyPrice: averageBuyPrice) {
-  const ballanceProfit: ballanceWithProfit = {}
-  for (let crypto in averageBuyPrice) {
-    ballanceProfit[crypto] = {ballance: averageBuyPrice[crypto].amount, profit: 0}
-  }
+  const RealizedProfits: profits = {}
   for (let i of history) {
     if (i.operation === "SELL" || i.operation === "EXCHANGE") {
       const priceGap = i.frominron - averageBuyPrice[i.frominstrument].avPrice
-      ballanceProfit[i.frominstrument] = {
-        ballance: ballanceProfit[i.frominstrument].ballance - i.amount, 
-        profit: ballanceProfit[i.frominstrument].profit + (priceGap * i.amount)
+      if (RealizedProfits[i.frominstrument]) {
+        RealizedProfits[i.frominstrument] = RealizedProfits[i.frominstrument] + (priceGap * i.amount)
+      } else {
+        RealizedProfits[i.frominstrument] = priceGap * i.amount
       }
     }
   }
-  return ballanceProfit;
+  return RealizedProfits;
 }
 
-function FeesDeducter(history: any[], ballanceWithProfit: ballanceWithProfit, averageBuyPrice: averageBuyPrice) {
-  let result = {...ballanceWithProfit}
+function FeesDeducter(history: any[], RealizedProfits: profits, averageBuyPrice: averageBuyPrice) {
+  let result = {...RealizedProfits}
   for (let i of history) {
     const fee = JSON.parse(i.fees)
     for (let j of fee) {
       if (!fiats.includes(j.instrument)) {
-        const feeInRON = Number(j.amount) * Number(averageBuyPrice[j.instrument].avPrice)
-        result[j.instrument] = {
-          ballance: result[j.instrument].ballance - Number(j.amount), 
-          profit: result[j.instrument].profit - feeInRON
+        const feeInRON = j.amount * averageBuyPrice[j.instrument].avPrice
+        if (result[j.instrument]) {
+          result[j.instrument] = result[j.instrument] - feeInRON
+        } else {
+          result[j.instrument] = -1 * feeInRON
         }
       } else {
         const fiatFeeInRON = Number(j.amount) * Number(i.frominron)
         if (result["fiatFees"]) {
-          result["fiatFees"] = {
-            ballance: 0, 
-            profit: result["fiatFees"].profit - fiatFeeInRON
-          }
+          result["fiatFees"] = result["fiatFees"] - fiatFeeInRON
         } else {
-          result["fiatFees"] = {
-            ballance: 0, 
-            profit:  -1 * fiatFeeInRON
-          }
+          result["fiatFees"] = -1 * fiatFeeInRON
         }
       }
     }

@@ -8,7 +8,7 @@ export default function HomeComponent() {
   const {user, setUser} = useContext(UserContext);
 
   return (
-      <div className="mx-auto px-4 py-8 text-center dark-glass transform translate-y-[-2.6%]">
+      <div style={{color: 'rgb(137, 253, 137)'}} className="mx-auto px-4  text-center">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Welcome to Your Crypto Investment Tracker</h1>
           <p className="text-lg">Track, analyze, and optimize your cryptocurrency investments with ease.</p>
