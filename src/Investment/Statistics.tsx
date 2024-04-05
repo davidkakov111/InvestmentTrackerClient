@@ -2,6 +2,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { useEffect, useState } from "react";
 import {
   getTax,
+  getTotalInvestedAmount,
   ProfitByCrypto,
   roundToTwoDecimalPlaces,
 } from "./Utils/StatisticsFunctions";
@@ -41,7 +42,7 @@ export function StatisticsComponent() {
           });
         }
 
-        const [currentProfits, totInvestAm] = ProfitByCrypto(transactions);
+        const currentProfits = ProfitByCrypto(transactions);
         
         let TaxableProfit = 0;
         let chartData = [];
@@ -54,7 +55,7 @@ export function StatisticsComponent() {
           }
         }
 
-        setTotalInvestedAmount(totInvestAm)
+        setTotalInvestedAmount(getTotalInvestedAmount(transactions))
         setHistory(transactions);
         setProfits(chartData);
         setTaxableProfit(roundToTwoDecimalPlaces(TaxableProfit));

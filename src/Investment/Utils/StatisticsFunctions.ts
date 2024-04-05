@@ -29,9 +29,7 @@ export function ProfitByCrypto(history: any[]) {
   let averageBuyPrice: averageBuyPrice = averageBuyPriceAndBallance(history)
   let profitLoss: profits = RealizedProfitAndLoss(history, averageBuyPrice)
   const Profits = FeesDeducter(history, profitLoss, averageBuyPrice)
-  const totalInvestedAmount = getTotalInvestedAmount(history, averageBuyPrice)
-  const result: [profits, number]  = [Profits, totalInvestedAmount]
-  return result
+  return Profits
 }
 
 function averageBuyPriceAndBallance(history: any[]) {
@@ -91,21 +89,11 @@ function FeesDeducter(history: any[], RealizedProfits: profits, averageBuyPrice:
   return result;
 }
 
-export function getTotalInvestedAmount (history: any[], averageBuyPrice: averageBuyPrice) {
+export function getTotalInvestedAmount (history: any[]) {
   let investedAmount = 0
   for (let i of history) {
     if (i.operation === "BUY") {
       investedAmount += (Number(i.amount) * Number(i.frominron))
-      const fee = JSON.parse(i.fees)
-      for (let j of fee) {
-        if (!fiats.includes(j.instrument)) {
-          const feeInRON = j.amount * averageBuyPrice[j.instrument].avPrice
-          investedAmount += feeInRON
-        } else {
-          const fiatFeeInRON = Number(j.amount) * Number(i.frominron)
-          investedAmount += fiatFeeInRON
-        }
-      }
     }
   }
   return roundToTwoDecimalPlaces(investedAmount);
