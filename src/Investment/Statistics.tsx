@@ -1,7 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { useEffect, useState } from "react";
 import {
-  getTotalInvestedAmount,
   getTax,
   ProfitByCrypto,
   roundToTwoDecimalPlaces,
@@ -16,6 +15,7 @@ export function StatisticsComponent() {
   const [taxableProfit, setTaxableProfit] = useState<number>(0);
   const [Profits, setProfits] = useState<any[]>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [totalInvestedAmount, setTotalInvestedAmount] = useState<number>(0);
 
   useEffect(() => {
     async function fetchData() {
@@ -41,9 +41,8 @@ export function StatisticsComponent() {
           });
         }
 
-        const currentProfits =
-          ProfitByCrypto(transactions);
-
+        const [currentProfits, totInvestAm] = ProfitByCrypto(transactions);
+        
         let TaxableProfit = 0;
         let chartData = [];
         for (let i in currentProfits) {
@@ -55,6 +54,7 @@ export function StatisticsComponent() {
           }
         }
 
+        setTotalInvestedAmount(totInvestAm)
         setHistory(transactions);
         setProfits(chartData);
         setTaxableProfit(roundToTwoDecimalPlaces(TaxableProfit));
@@ -112,7 +112,7 @@ export function StatisticsComponent() {
           <div className="flex flex-wrap gap-4">
             <div className="bg-black border-2 border-green-500 rounded-lg p-4 max-w-xs">
               <p className="text-green-500">
-                Total invested: <b>{getTotalInvestedAmount(history)}</b> RON
+                Total invested: <b>{totalInvestedAmount}</b> RON
               </p>
             </div>
             <div className="bg-black border-2 border-green-500 rounded-lg p-4 max-w-xs">

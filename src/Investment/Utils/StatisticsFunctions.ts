@@ -7,17 +7,6 @@ interface profits{
   [key: string]: number
 }
 
-export function getTotalInvestedAmount (history: any[]) {
-  let investedAmount = 0
-  for (let i of history) {
-    if (i.operation === "BUY") {
-      investedAmount += (Number(i.amount) * Number(i.frominron))
-      // investedAmount += fees
-    }
-  }
-  return roundToTwoDecimalPlaces(investedAmount);
-}
-
 export function getTax(taxableProfit: number, minimumGrossWage: number) {
   let CASS = 0
   let incomeTax = 0
@@ -40,7 +29,9 @@ export function ProfitByCrypto(history: any[]) {
   let averageBuyPrice: averageBuyPrice = averageBuyPriceAndBallance(history)
   let profitLoss: profits = RealizedProfitAndLoss(history, averageBuyPrice)
   const Profits = FeesDeducter(history, profitLoss, averageBuyPrice)
-  return Profits
+  const totalInvestedAmount = getTotalInvestedAmount(history, averageBuyPrice)
+  const result: [profits, number]  = [Profits, totalInvestedAmount]
+  return result
 }
 
 function averageBuyPriceAndBallance(history: any[]) {
@@ -66,7 +57,7 @@ function RealizedProfitAndLoss(history: any[], averageBuyPrice: averageBuyPrice)
     if (i.operation === "SELL" || i.operation === "EXCHANGE") {
       const priceGap = i.frominron - averageBuyPrice[i.frominstrument].avPrice
       if (RealizedProfits[i.frominstrument]) {
-        RealizedProfits[i.frominstrument] = RealizedProfits[i.frominstrument] + (priceGap * i.amount)
+        RealizedProfits[i.frominstrument] += (priceGap * i.amount)
       } else {
         RealizedProfits[i.frominstrument] = priceGap * i.amount
       }
@@ -83,14 +74,14 @@ function FeesDeducter(history: any[], RealizedProfits: profits, averageBuyPrice:
       if (!fiats.includes(j.instrument)) {
         const feeInRON = j.amount * averageBuyPrice[j.instrument].avPrice
         if (result[j.instrument]) {
-          result[j.instrument] = result[j.instrument] - feeInRON
+          result[j.instrument] -= feeInRON
         } else {
           result[j.instrument] = -1 * feeInRON
         }
       } else {
         const fiatFeeInRON = Number(j.amount) * Number(i.frominron)
         if (result["fiatFees"]) {
-          result["fiatFees"] = result["fiatFees"] - fiatFeeInRON
+          result["fiatFees"] -= fiatFeeInRON
         } else {
           result["fiatFees"] = -1 * fiatFeeInRON
         }
@@ -98,6 +89,26 @@ function FeesDeducter(history: any[], RealizedProfits: profits, averageBuyPrice:
     }
   }
   return result;
+}
+
+export function getTotalInvestedAmount (history: any[], averageBuyPrice: averageBuyPrice) {
+  let investedAmount = 0
+  for (let i of history) {
+    if (i.operation === "BUY") {
+      investedAmount += (Number(i.amount) * Number(i.frominron))
+      const fee = JSON.parse(i.fees)
+      for (let j of fee) {
+        if (!fiats.includes(j.instrument)) {
+          const feeInRON = j.amount * averageBuyPrice[j.instrument].avPrice
+          investedAmount += feeInRON
+        } else {
+          const fiatFeeInRON = Number(j.amount) * Number(i.frominron)
+          investedAmount += fiatFeeInRON
+        }
+      }
+    }
+  }
+  return roundToTwoDecimalPlaces(investedAmount);
 }
 
 export function roundToTwoDecimalPlaces(num: number): number {
