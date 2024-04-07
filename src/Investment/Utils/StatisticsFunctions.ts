@@ -14,15 +14,15 @@ export function getTax(taxableProfit: number, minimumGrossWage: number) {
     incomeTax = taxableProfit * 0.1
   }
   if (taxableProfit > (minimumGrossWage * 6)) {
-    CASS = (minimumGrossWage * 6) * 0.1
+    CASS = (minimumGrossWage * 6)
   }
   if (taxableProfit > (minimumGrossWage * 12)) {
-    CASS = (minimumGrossWage * 12) * 0.1
+    CASS = (minimumGrossWage * 12)
   }
   if (taxableProfit > (minimumGrossWage * 24)) {
-    CASS = (minimumGrossWage * 24) * 0.1
+    CASS = (minimumGrossWage * 24)
   }
-  return [incomeTax, CASS]
+  return [incomeTax, CASS * 0.1]
 }
 
 export function ProfitByCrypto(history: any[]) {
@@ -54,10 +54,11 @@ function RealizedProfitAndLoss(history: any[], averageBuyPrice: averageBuyPrice)
   for (let i of history) {
     if (i.operation === "SELL" || i.operation === "EXCHANGE") {
       const priceGap = i.frominron - averageBuyPrice[i.frominstrument].avPrice
+      const profitOrLoss = priceGap * i.amount
       if (RealizedProfits[i.frominstrument]) {
-        RealizedProfits[i.frominstrument] += (priceGap * i.amount)
+        RealizedProfits[i.frominstrument] += profitOrLoss
       } else {
-        RealizedProfits[i.frominstrument] = priceGap * i.amount
+        RealizedProfits[i.frominstrument] = profitOrLoss
       }
     }
   }
@@ -70,13 +71,26 @@ function FeesDeducter(history: any[], RealizedProfits: profits, averageBuyPrice:
     const fee = JSON.parse(i.fees)
     for (let j of fee) {
       if (!fiats.includes(j.instrument)) {
-        const feeInRON = j.amount * averageBuyPrice[j.instrument].avPrice
+        let price = 0
+        if (j.instrument === i.frominstrument) {
+          price = i.frominron            
+        } else if (j.instrument === i.toinstrument) {
+          price = i.toinron
+        } else {
+          price = averageBuyPrice[j.instrument].avPrice
+        }
+        const feeInRON = j.amount * price
         if (result[j.instrument]) {
           result[j.instrument] -= feeInRON
         } else {
           result[j.instrument] = -1 * feeInRON
         }
       } else {
+        if (j.instrument !== i.frominstrument) {
+          const response = `You can only pay a fiat fee in ${j.instrument}, when you buy cryptocurrency with ${j.instrument}!`
+          alert(response)
+          throw new Error(response);
+        }
         const fiatFeeInRON = Number(j.amount) * Number(i.frominron)
         if (result["fiatFees"]) {
           result["fiatFees"] -= fiatFeeInRON
