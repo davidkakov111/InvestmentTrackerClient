@@ -1,4 +1,4 @@
-import { fiats } from "../Instruments";
+import { fiats } from "../../Instruments";
 
 interface averageBuyPrice {
   [key: string]: {avPrice: number, amount: number}
@@ -27,9 +27,12 @@ export function getTax(taxableProfit: number, minimumGrossWage: number) {
 
 export function ProfitByCrypto(history: any[]) {
   let averageBuyPrice: averageBuyPrice = averageBuyPriceAndBallance(history)
-  let profitLoss: profits = RealizedProfitAndLoss(history, averageBuyPrice)
-  const Profits = FeesDeducter(history, profitLoss, averageBuyPrice)
-  return Profits
+  let profitLossFiat: profits = RealizedProfitAndLoss(history, averageBuyPrice)
+  let profitLossAll: profits = RealizedProfitAndLoss(history, averageBuyPrice, true)
+  const ProfitsFiat = FeesDeducter(history, profitLossFiat, averageBuyPrice)
+  const ProfitsAll = FeesDeducter(history, profitLossAll, averageBuyPrice)
+  
+  return [ProfitsFiat, ProfitsAll]
 }
 
 function averageBuyPriceAndBallance(history: any[]) {
@@ -49,16 +52,28 @@ function averageBuyPriceAndBallance(history: any[]) {
   return averageBuyPrice;
 }
 
-function RealizedProfitAndLoss(history: any[], averageBuyPrice: averageBuyPrice) {
+function RealizedProfitAndLoss(history: any[], averageBuyPrice: averageBuyPrice, exchange: boolean = false) {
   const RealizedProfits: profits = {}
   for (let i of history) {
-    if (i.operation === "SELL" || i.operation === "EXCHANGE") {
-      const priceGap = i.frominron - averageBuyPrice[i.frominstrument].avPrice
-      const profitOrLoss = priceGap * i.amount
-      if (RealizedProfits[i.frominstrument]) {
-        RealizedProfits[i.frominstrument] += profitOrLoss
-      } else {
-        RealizedProfits[i.frominstrument] = profitOrLoss
+    if (exchange) {
+      if (i.operation === "SELL" || i.operation === "EXCHANGE") {
+        const priceGap = i.frominron - averageBuyPrice[i.frominstrument].avPrice
+        const profitOrLoss = priceGap * i.amount
+        if (RealizedProfits[i.frominstrument]) {
+          RealizedProfits[i.frominstrument] += profitOrLoss
+        } else {
+          RealizedProfits[i.frominstrument] = profitOrLoss
+        }
+      }
+    } else {
+      if (i.operation === "SELL") {
+        const priceGap = i.frominron - averageBuyPrice[i.frominstrument].avPrice
+        const profitOrLoss = priceGap * i.amount
+        if (RealizedProfits[i.frominstrument]) {
+          RealizedProfits[i.frominstrument] += profitOrLoss
+        } else {
+          RealizedProfits[i.frominstrument] = profitOrLoss
+        }
       }
     }
   }

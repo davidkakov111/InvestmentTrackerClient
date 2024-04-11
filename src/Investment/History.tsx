@@ -59,29 +59,31 @@ export default function HistoryTable() {
     <>
       {history && history.length > 0 ? (
         <>
-          <table className="history-table">
-            <TableHead />
-            <tbody>
-              {history?.map((transaction, index) =>
-                transaction.id !== editId ? (
-                  <RegularTableRow
-                    transaction={transaction}
-                    mapIndex={index}
-                    setEditId={setEditId}
-                    key={index}
-                  />
-                ) : (
-                  <EditTableRow
-                    transaction={transaction}
-                    mapIndex={index}
-                    setEditId={setEditId}
-                    updateHistoryState={updateHistoryState}
-                    key={index}
-                  />
-                )
-              )}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="history-table table-auto">
+              <TableHead />
+              <tbody>
+                {history?.map((transaction, index) =>
+                  transaction.id !== editId ? (
+                    <RegularTableRow
+                      transaction={transaction}
+                      mapIndex={index}
+                      setEditId={setEditId}
+                      key={index}
+                    />
+                  ) : (
+                    <EditTableRow
+                      transaction={transaction}
+                      mapIndex={index}
+                      setEditId={setEditId}
+                      updateHistoryState={updateHistoryState}
+                      key={index}
+                    />
+                  )
+                )}
+              </tbody>
+            </table>
+          </div>
           <DeleteTransactionHistory
             deleteHistoryState={() => {
               setHistory([]);
