@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-  getTotalInvestedAmount,
+  InvestedAndSoldToFiatAmount,
   ProfitByCrypto,
   roundToTwoDecimalPlaces,
 } from "./components/StatisticsComponents/StatisticsFunctions";
@@ -11,8 +11,8 @@ import { StatisticsPanel } from "./components/StatisticsComponents/StatisticsCom
 
 export function StatisticsComponent() {
   const [history, setHistory] = useState<any[]>([]);
-  const [taxableProfit, setTaxableProfit] = useState<{FiatGain:number, AllGain:number}>({FiatGain:0, AllGain:0});
-  const [Profits, setProfits] = useState<{FiatGain:any[], AllGain:any[]}>();
+  const [taxableProfit, setTaxableProfit] = useState<{AllGain:number, FiatGain:number}>({AllGain:0, FiatGain:0});
+  const [Profits, setProfits] = useState<any[]>();
   const [loading, setLoading] = useState<boolean>(true);
   const [totalInvestedAmount, setTotalInvestedAmount] = useState<number>(0);
 
@@ -46,34 +46,23 @@ export function StatisticsComponent() {
           });
         }
 
-        const [FiatGain, AllGain] = ProfitByCrypto(transactions);
-        
-        let TaxableFiatProfit = 0;
-        let FiatGainChartData = [];
-        for (let i in FiatGain) {
-          const current = FiatGain[i];
-          TaxableFiatProfit += current;
+        const [investedAmount, soldAmount] = InvestedAndSoldToFiatAmount(transactions)
+        const Profit = ProfitByCrypto(transactions);
+        let TaxableProfit = 0;
+        let ProfitChartData: any[] = [];
+        for (let i in Profit) {
+          const current = Profit[i];
+          TaxableProfit += current;
           if (i !== "fiatFees") {
             const profit = roundToTwoDecimalPlaces(current);
-            FiatGainChartData.push({ asset: i, profit: profit });
+            ProfitChartData.push({ asset: i, profit: profit });
           }
         }
 
-        let TaxableAllProfit = 0;
-        let AllGainChartData: any[] = [];
-        for (let i in AllGain) {
-          const current = AllGain[i];
-          TaxableAllProfit += current;
-          if (i !== "fiatFees") {
-            const profit = roundToTwoDecimalPlaces(current);
-            AllGainChartData.push({ asset: i, profit: profit });
-          }
-        }
-
-        setTotalInvestedAmount(getTotalInvestedAmount(transactions));
+        setTotalInvestedAmount(roundToTwoDecimalPlaces(investedAmount));
         setHistory(transactions);
-        setProfits({FiatGain: FiatGainChartData, AllGain: AllGainChartData});
-        setTaxableProfit({FiatGain:roundToTwoDecimalPlaces(TaxableFiatProfit), AllGain:roundToTwoDecimalPlaces(TaxableAllProfit)});
+        setProfits(ProfitChartData);
+        setTaxableProfit({AllGain:roundToTwoDecimalPlaces(TaxableProfit), FiatGain:roundToTwoDecimalPlaces(soldAmount-investedAmount)});
       } catch (error) {
         console.error(
           "Error fetching transactions or calculating statistics:",
@@ -90,27 +79,10 @@ export function StatisticsComponent() {
   return (
     <>
       {history && history.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mx-2 mt-3">
-          <div className="md:col-span-1 text-center bg-green-900 rounded-lg">
-            <span
-              title="Profits from both crypto-to-crypto exchanges and conversions to fiat currency, after deducting applicable fees."
-              style={{ cursor: "help" }}
-            >
-              <p className="text-2xl mb-6 underline mt-2">Realized Gain (All Trades)</p>
-            </span>
-            <StatisticsPanel totalInvestedAmount={totalInvestedAmount} taxableProfit={taxableProfit.AllGain} Profits={Profits?.AllGain}/>
-          </div>
-          <div className="md:col-span-1 text-center bg-green-700 rounded-lg">
-            <span
-              title="Profits that have been converted and realized in fiat currency, after deducting applicable fees."
-              style={{ cursor: "help" }}
-            >
-              <p className="text-2xl mb-6 underline mt-2">FIAT Realized Gain</p>
-            </span>
-            <StatisticsPanel totalInvestedAmount={totalInvestedAmount} taxableProfit={taxableProfit.FiatGain} Profits={Profits?.FiatGain}/>
-          </div>
+        <>
+          <StatisticsPanel totalInvestedAmount={totalInvestedAmount} taxableProfit={taxableProfit} Profits={Profits}/>
           <br/>
-        </div>
+        </>
       ) : (
         <NoTrHistoryWinow
           title="Stats Unavailable: No History!"

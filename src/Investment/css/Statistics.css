@@ -4,4 +4,6 @@
     backdrop-filter: blur(15px); 
     border-radius: 20px;
     margin: 0 auto;
+    border: 1px solid green;
+    margin-top: 10px;
 }

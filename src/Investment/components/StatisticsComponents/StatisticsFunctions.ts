@@ -22,17 +22,14 @@ export function getTax(taxableProfit: number, minimumGrossWage: number) {
   if (taxableProfit > (minimumGrossWage * 24)) {
     CASS = (minimumGrossWage * 24)
   }
-  return [incomeTax, CASS * 0.1]
+  return [roundToTwoDecimalPlaces(incomeTax), roundToTwoDecimalPlaces(CASS * 0.1)]
 }
 
 export function ProfitByCrypto(history: any[]) {
   let averageBuyPrice: averageBuyPrice = averageBuyPriceAndBallance(history)
-  let profitLossFiat: profits = RealizedProfitAndLoss(history, averageBuyPrice)
-  let profitLossAll: profits = RealizedProfitAndLoss(history, averageBuyPrice, true)
-  const ProfitsFiat = FeesDeducter(history, profitLossFiat, averageBuyPrice)
-  const ProfitsAll = FeesDeducter(history, profitLossAll, averageBuyPrice)
-  
-  return [ProfitsFiat, ProfitsAll]
+  let profitLoss: profits = RealizedProfitAndLoss(history, averageBuyPrice)
+  const Profits = FeesDeducter(history, profitLoss, averageBuyPrice)
+  return Profits
 }
 
 function averageBuyPriceAndBallance(history: any[]) {
@@ -52,32 +49,33 @@ function averageBuyPriceAndBallance(history: any[]) {
   return averageBuyPrice;
 }
 
-function RealizedProfitAndLoss(history: any[], averageBuyPrice: averageBuyPrice, exchange: boolean = false) {
+function RealizedProfitAndLoss(history: any[], averageBuyPrice: averageBuyPrice) {
   const RealizedProfits: profits = {}
   for (let i of history) {
-    if (exchange) {
-      if (i.operation === "SELL" || i.operation === "EXCHANGE") {
-        const priceGap = i.frominron - averageBuyPrice[i.frominstrument].avPrice
-        const profitOrLoss = priceGap * i.amount
-        if (RealizedProfits[i.frominstrument]) {
-          RealizedProfits[i.frominstrument] += profitOrLoss
-        } else {
-          RealizedProfits[i.frominstrument] = profitOrLoss
-        }
-      }
-    } else {
-      if (i.operation === "SELL") {
-        const priceGap = i.frominron - averageBuyPrice[i.frominstrument].avPrice
-        const profitOrLoss = priceGap * i.amount
-        if (RealizedProfits[i.frominstrument]) {
-          RealizedProfits[i.frominstrument] += profitOrLoss
-        } else {
-          RealizedProfits[i.frominstrument] = profitOrLoss
-        }
+    if (i.operation === "SELL" || i.operation === "EXCHANGE") {
+      const priceGap = i.frominron - averageBuyPrice[i.frominstrument].avPrice
+      const profitOrLoss = priceGap * i.amount
+      if (RealizedProfits[i.frominstrument]) {
+        RealizedProfits[i.frominstrument] += profitOrLoss
+      } else {
+        RealizedProfits[i.frominstrument] = profitOrLoss
       }
     }
   }
   return RealizedProfits;
+}
+
+export function InvestedAndSoldToFiatAmount(history: any[]) {
+  let soldAmount = 0
+  let investedAmount = 0
+  for (let i of history) {
+    if (i.operation === "SELL") {
+      soldAmount += i.amount * i.frominron
+    } else if (i.operation === "BUY") {
+      investedAmount += (Number(i.amount) * Number(i.frominron))
+    }
+  }
+  return [investedAmount, soldAmount];
 }
 
 function FeesDeducter(history: any[], RealizedProfits: profits, averageBuyPrice: averageBuyPrice) {
@@ -116,16 +114,6 @@ function FeesDeducter(history: any[], RealizedProfits: profits, averageBuyPrice:
     }
   }
   return result;
-}
-
-export function getTotalInvestedAmount (history: any[]) {
-  let investedAmount = 0
-  for (let i of history) {
-    if (i.operation === "BUY") {
-      investedAmount += (Number(i.amount) * Number(i.frominron))
-    }
-  }
-  return roundToTwoDecimalPlaces(investedAmount);
 }
 
 export function roundToTwoDecimalPlaces(num: number): number {
