@@ -68,7 +68,7 @@ export const StatisticsPanel: React.FC<StatisticsComponentProps> = ({
       >
         <br/>
         <p className="text-green-500 text-center text-2xl pb-3">
-          Realized profit in RON / Asset
+          Realized gain in RON / Asset (All Trades)
         </p>
         <br />
         <br />
@@ -100,7 +100,7 @@ const TaxCalculator: React.FC<TaxCalculatorProps> = ({taxableProfit}) => {
         <p className="text-green-500 text-center text-2xl pb-3">
           Tax calculator
         </p>
-        <label className="text-green-500" htmlFor="min-salary">
+        <label className="text-green-500" htmlFor={`min-salary ${taxableProfit}`}>
           Provide the minimum gross wage in RON for the year{" "}
           {new Date().getFullYear() - 1} in Romania (It is necessary to
           calculate your taxes accurately.):
@@ -114,8 +114,8 @@ const TaxCalculator: React.FC<TaxCalculatorProps> = ({taxableProfit}) => {
             }
           }}
           type="number"
-          id="min-salary"
-          name="min-salary"
+          id={`min-salary ${taxableProfit}`}
+          name={`min-salary ${taxableProfit}`}
           step="0.01"
         />
         {minimumGrossWage ? (

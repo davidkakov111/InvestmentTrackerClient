@@ -12,17 +12,16 @@ export function TableHead() {
   return (
     <thead>
       <tr>
-        <th>Nr</th>
+        <th>Date</th>
         <th>Operation</th>
         <th>From</th>
-        <th>To</th>
         <th>From (RON)</th>
+        <th>To</th>
         <th>To (RON)</th>
-        <th>Fee (RON)</th>
         <th>Amount (From)</th>
+        <th>Fee (RON)</th>
         <th>Transfered</th>
         <th>TxLink</th>
-        <th>Date</th>
         <th>Edit</th>
       </tr>
     </thead>
@@ -32,26 +31,24 @@ export function TableHead() {
 export const RegularTableRow: React.FC<RegularTableRowComponentProps> = ({
   transaction,
   setEditId,
-  mapIndex,
 }) => {
   return (
     <tr>
-      <td className={transaction.operation}>{mapIndex + 1}</td>
+      <td className={transaction.operation}>
+        {String(new Date(Number(transaction.timestamp)).toLocaleString())}
+      </td>
       <td className={transaction.operation}>{transaction.operation}</td>
       <td className={transaction.operation}>{transaction.frominstrument}</td>
-      <td className={transaction.operation}>{transaction.toinstrument}</td>
       <td className={transaction.operation}>{transaction.frominron}</td>
+      <td className={transaction.operation}>{transaction.toinstrument}</td>
       <td className={transaction.operation}>{transaction.toinron}</td>
-      <td className={transaction.operation}>{transaction.fees}</td>
       <td className={transaction.operation}>{transaction.amount}</td>
+      <td className={transaction.operation}>{transaction.fees}</td>
       <td className={transaction.operation}>
         {JSON.parse(transaction.what) ? JSON.parse(transaction.what)[0] : ""}
       </td>
       <td className={transaction.operation}>
         {JSON.parse(transaction.what) ? JSON.parse(transaction.what)[1] : ""}
-      </td>
-      <td className={transaction.operation}>
-        {String(new Date(Number(transaction.timestamp)).toLocaleString())}
       </td>
       <td>
         <div className="flex items-center justify-center w-20 h-20">
@@ -100,7 +97,20 @@ export const EditTableRow: React.FC<EditTableRowComponentProps> = ({
   
   return (
     <tr>
-      <td className={currentTransaction.operation}>{mapIndex + 1}</td>
+      <td className={currentTransaction.operation}>
+        <input
+          value={moment(currentTransaction.timestamp).format(
+            "YYYY-MM-DDTHH:mm"
+          )}
+          onChange={(e) =>{
+          if (e.target.value) {
+            handleChange("timestamp", new Date(e.target.value).getTime())
+          }}}
+          type="datetime-local"
+          id="timestamp"
+          name="timestamp"
+        />
+      </td>
       <td className={currentTransaction.operation}>
         <select
           value={currentTransaction.operation}
@@ -134,6 +144,20 @@ export const EditTableRow: React.FC<EditTableRowComponentProps> = ({
         </select>
       </td>
       <td className={currentTransaction.operation}>
+        <input
+          value={currentTransaction.frominron}
+          onChange={(e) => {
+            if (Number(e.target.value) >= 0) {
+              handleChange("frominron", Number(e.target.value));
+            }
+          }}
+          type="number"
+          id="frominron"
+          name="frominron"
+          step="0.01"
+        />
+      </td>
+      <td className={currentTransaction.operation}>
         <select
           value={currentTransaction.toinstrument}
           onChange={(e) => handleChange("toinstrument", e.target.value)}
@@ -147,20 +171,6 @@ export const EditTableRow: React.FC<EditTableRowComponentProps> = ({
             </option>
           ))}
         </select>
-      </td>
-      <td className={currentTransaction.operation}>
-        <input
-          value={currentTransaction.frominron}
-          onChange={(e) => {
-            if (Number(e.target.value) >= 0) {
-              handleChange("frominron", Number(e.target.value));
-            }
-          }}
-          type="number"
-          id="frominron"
-          name="frominron"
-          step="0.01"
-        />
       </td>
       <td className={currentTransaction.operation}>
         <input
@@ -178,15 +188,6 @@ export const EditTableRow: React.FC<EditTableRowComponentProps> = ({
       </td>
       <td className={currentTransaction.operation}>
         <input
-          value={currentTransaction.fees}
-          onChange={(e) => handleChange("fees", e.target.value)}
-          type="text"
-          id="fees"
-          name="fees"
-        />
-      </td>
-      <td className={currentTransaction.operation}>
-        <input
           value={currentTransaction.amount}
           onChange={(e) => {
             if (Number(e.target.value) > 0) {
@@ -197,6 +198,15 @@ export const EditTableRow: React.FC<EditTableRowComponentProps> = ({
           id="amount"
           name="amount"
           step="0.01"
+        />
+      </td>
+      <td className={currentTransaction.operation}>
+        <input
+          value={currentTransaction.fees}
+          onChange={(e) => handleChange("fees", e.target.value)}
+          type="text"
+          id="fees"
+          name="fees"
         />
       </td>
       <td className={currentTransaction.operation}>
@@ -250,20 +260,6 @@ export const EditTableRow: React.FC<EditTableRowComponentProps> = ({
           type="text"
           id="whatsecond"
           name="whatsecond"
-        />
-      </td>
-      <td className={currentTransaction.operation}>
-        <input
-          value={moment(currentTransaction.timestamp).format(
-            "YYYY-MM-DDTHH:mm"
-          )}
-          onChange={(e) =>{
-          if (e.target.value) {
-            handleChange("timestamp", new Date(e.target.value).getTime())
-          }}}
-          type="datetime-local"
-          id="timestamp"
-          name="timestamp"
         />
       </td>
       <td>

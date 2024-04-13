@@ -19,7 +19,7 @@ export default function HistoryTable() {
   useEffect(() => {
     async function fetchData() {
       const trHistory = await fetchTransactionHistory();
-      if (trHistory) setHistory(trHistory);
+      setHistory(trHistory?.reverse())
       setLoading(false);
     }
     fetchData();
@@ -59,6 +59,16 @@ export default function HistoryTable() {
     <>
       {history && history.length > 0 ? (
         <>
+          <div className="flex justify-center">
+            <button className="bg-gradient-to-br from-green-500 
+              to-green-900 bg-opacity-20 text-black rounded-full
+              hover:bg-green-700 focus:outline-none focus:ring-2 
+              focus:ring-green-500 focus:ring-opacity-50 mb-3 p-2 text-lg"
+              onClick={()=>{setHistory([...history].reverse())}}
+            >
+              <b>Reverse Chronology</b>
+            </button>
+          </div>
           <div className="overflow-x-auto">
             <table className="history-table table-auto">
               <TableHead />
@@ -67,7 +77,6 @@ export default function HistoryTable() {
                   transaction.id !== editId ? (
                     <RegularTableRow
                       transaction={transaction}
-                      mapIndex={index}
                       setEditId={setEditId}
                       key={index}
                     />

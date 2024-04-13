@@ -3,16 +3,16 @@ table {
     border-collapse: collapse;
 }
 th {
-    background-color: hsl(0, 0%, 88%);
+    background-color: hsl(128, 40%, 54%);
     font-weight: bold;
     text-align: left;
     padding: 8px;
 }
 tr:nth-child(even) {
-    background-color: #cbcbcb;
+    background-color: hsl(129, 22%, 65%);
 }
 tr:nth-child(odd) {
-    background-color: #b3b3b3;
+    background-color: hsl(126, 13%, 71%);
 }
 td {
     padding: 8px;
@@ -30,7 +30,7 @@ td {
     color: red;
 }
 .EXCHANGE {
-    color: rgb(235, 235, 0);
+    color: rgb(255, 255, 0);
 }
 .TRANSFER {
     color: rgb(109, 65, 156);

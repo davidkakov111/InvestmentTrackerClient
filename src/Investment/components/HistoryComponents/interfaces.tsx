@@ -1,10 +1,10 @@
 export interface RegularTableRowComponentProps {
     transaction: any;
     setEditId: React.Dispatch<React.SetStateAction<number>>;
-    mapIndex: number;
 }
 
 export interface EditTableRowComponentProps extends RegularTableRowComponentProps {
+    mapIndex: number;
     updateHistoryState: (
         currentTransaction: BodyTransaction,
         mapIndex: number,
