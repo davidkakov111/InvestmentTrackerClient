@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  InvestedAndSoldToFiatAmount,
   ProfitByCrypto,
   roundToTwoDecimalPlaces,
 } from "./components/StatisticsComponents/StatisticsFunctions";
@@ -11,7 +10,8 @@ import { StatisticsPanel } from "./components/StatisticsComponents/StatisticsCom
 
 export function StatisticsComponent() {
   const [history, setHistory] = useState<any[]>([]);
-  const [taxableProfit, setTaxableProfit] = useState<{AllGain:number, FiatGain:number}>({AllGain:0, FiatGain:0});
+  const [taxableProfit, setTaxableProfit] = useState<number>(0);
+  const [above200profit, setAbove200Profit] = useState<number>(0);
   const [Profits, setProfits] = useState<any[]>();
   const [loading, setLoading] = useState<boolean>(true);
   const [totalInvestedAmount, setTotalInvestedAmount] = useState<number>(0);
@@ -24,7 +24,6 @@ export function StatisticsComponent() {
           alert("Please SignIn first!");
           return;
         }
-
         const response = await fetch(
           `${process.env.REACT_APP_BACKEND_API}/GetTransactions`,
           {
@@ -46,8 +45,7 @@ export function StatisticsComponent() {
           });
         }
 
-        const [investedAmount, soldAmount] = InvestedAndSoldToFiatAmount(transactions)
-        const Profit = ProfitByCrypto(transactions);
+        const [[Profit, investedAmount], above200profit]= ProfitByCrypto(transactions);
         let TaxableProfit = 0;
         let ProfitChartData: any[] = [];
         for (let i in Profit) {
@@ -56,13 +54,16 @@ export function StatisticsComponent() {
           if (i !== "fiatFees") {
             const profit = roundToTwoDecimalPlaces(current);
             ProfitChartData.push({ asset: i, profit: profit });
+          } else {
+            
           }
         }
 
-        setTotalInvestedAmount(roundToTwoDecimalPlaces(investedAmount));
+        setTotalInvestedAmount(investedAmount);
         setHistory(transactions);
         setProfits(ProfitChartData);
-        setTaxableProfit({AllGain:roundToTwoDecimalPlaces(TaxableProfit), FiatGain:roundToTwoDecimalPlaces(soldAmount-investedAmount)});
+        setTaxableProfit(TaxableProfit);
+        setAbove200Profit(above200profit);
       } catch (error) {
         console.error(
           "Error fetching transactions or calculating statistics:",
@@ -75,18 +76,18 @@ export function StatisticsComponent() {
   }, []);
 
   if (loading) return <LoadingComponent />;
-  
+
   return (
     <>
-      {history && history.length > 0 ? (
+      {history && history.length > 0 && Profits ? (
         <>
-          <StatisticsPanel totalInvestedAmount={totalInvestedAmount} taxableProfit={taxableProfit} Profits={Profits}/>
+          <StatisticsPanel totalInvestedAmount={totalInvestedAmount} taxableProfit={taxableProfit} above200profit={above200profit} Profits={Profits}/>
           <br/>
         </>
       ) : (
         <NoTrHistoryWinow
           title="Stats Unavailable: No History!"
-          subtitle="No transaction history found or invalid. Double check for any cryptocurrency sales, exchanges or paid fees not previously purchased."
+          subtitle="No transaction history found or invalid. Double check for any cryptocurrency sales, exchanges not previously purchased."
         />
       )}
     </>

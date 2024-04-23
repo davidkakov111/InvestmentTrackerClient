@@ -50,6 +50,7 @@ export default function HomeComponent() {
             Get Started
           </Link>
         </div>
+        <br/>
       </div>
   );
 }

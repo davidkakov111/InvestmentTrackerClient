@@ -1,20 +1,24 @@
 import { useState } from "react";
-import { getTax } from "./StatisticsFunctions";
+import { getTax, roundToTwoDecimalPlaces } from "./StatisticsFunctions";
 import { Bar, BarChart, Legend, Tooltip, XAxis, YAxis } from "recharts";
 
 interface StatisticsComponentProps {
   totalInvestedAmount: number,
-  taxableProfit: {FiatGain:number, AllGain:number}
-  Profits: any[] | undefined,
+  taxableProfit: number,
+  above200profit: number,
+  Profits: any[]
 }
 
 interface TaxCalculatorProps {
-  taxableProfit: number
+  taxableProfit: number,
+  above200profit: number,
+  Profits: any[]
 }
 
 export const StatisticsPanel: React.FC<StatisticsComponentProps> = ({ 
   totalInvestedAmount,
   taxableProfit,
+  above200profit,
   Profits 
 }) => {
   // Defining width for chart
@@ -23,42 +27,17 @@ export const StatisticsPanel: React.FC<StatisticsComponentProps> = ({
   return (
     <>
       <br/>
+      <TaxCalculator taxableProfit={taxableProfit} above200profit={above200profit} Profits={Profits}/>
       <div className="flex flex-wrap gap-4 justify-center">
         <div style={{border:"2px solid green"}} className="bg-black rounded-lg p-4 max-w-xs">
           <p className="text-green-500 text-lg">
             Total invested: <b>{totalInvestedAmount}</b> RON
           </p>
         </div>
-      </div>
-      <br/>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">  
-        <div style={{backgroundColor:"#22543d", margin:'4px'}} className="md:col-span-1 text-center rounded-lg">
-          <span
-            title="Profits from both crypto-to-crypto exchanges and conversions to fiat currency, after deducting applicable fees."
-            style={{ cursor: "help" }}
-          >
-            <p className="text-3xl mb-6 underline mt-2">Realized Gain (All Trades)</p>
-          </span>
-          <div className="border-2 border-green-500 rounded-lg p-4 max-w-xs">
-            <p>
-              Total realized taxable profit: <b>{taxableProfit.AllGain}</b> RON
-            </p>
-          </div>
-          <TaxCalculator taxableProfit={taxableProfit.AllGain}/>
-        </div>
-        <div style={{backgroundColor:"#2F855A", margin:'4px'}} className="md:col-span-1 text-center rounded-lg"> 
-          <span
-            title="Profits that have been converted and realized in fiat currency, after deducting applicable fees."
-            style={{ cursor: "help" }}
-          >
-            <p className="text-3xl mb-6 underline mt-2">FIAT Realized Gain</p>
-          </span>
-          <div className="border-2 rounded-lg border-green-500 p-4 max-w-xs">
-            <p>
-              Total realized taxable profit: <b>{taxableProfit.FiatGain}</b> RON
-            </p>
-          </div>
-          <TaxCalculator taxableProfit={taxableProfit.FiatGain}/>
+        <div style={{border:"2px solid green"}} className="bg-black rounded-lg p-4 max-w-xs">
+          <p className="text-green-500 text-lg">
+            Total taxable profit: <b>{roundToTwoDecimalPlaces(taxableProfit)}</b> RON
+          </p>
         </div>
       </div>
       <br/>
@@ -68,7 +47,7 @@ export const StatisticsPanel: React.FC<StatisticsComponentProps> = ({
       >
         <br/>
         <p className="text-green-500 text-center text-2xl pb-3">
-          Realized gain in RON / Asset (All Trades)
+          Profit or Loss in RON / Asset
         </p>
         <br />
         <br />
@@ -89,21 +68,18 @@ export const StatisticsPanel: React.FC<StatisticsComponentProps> = ({
   )
 }
 
-const TaxCalculator: React.FC<TaxCalculatorProps> = ({taxableProfit}) => {
+const TaxCalculator: React.FC<TaxCalculatorProps> = ({taxableProfit, above200profit}) => {
   const [minimumGrossWage, setMinimumGrossWage] = useState<string>("");
-  const [incomeTax, CASS] = getTax(taxableProfit, Number(minimumGrossWage));
+  const [incomeTax, CASS] = getTax(taxableProfit, above200profit, Number(minimumGrossWage));
 
-  return(
-  <>
+  return (<>
     <div className="flex justify-center">
-      <div className="bg-black border-2 border-green-500 rounded-lg p-4 max-w-md m-3">
+      <div style={{border:"2px solid green"}} className="bg-black p-4 max-w-md m-3 rounded-lg">
         <p className="text-green-500 text-center text-2xl pb-3">
           Tax calculator
         </p>
-        <label className="text-green-500" htmlFor={`min-salary ${taxableProfit}`}>
-          Provide the minimum gross wage in RON for the year{" "}
-          {new Date().getFullYear() - 1} in Romania (It is necessary to
-          calculate your taxes accurately.):
+        <label className="text-green-500" htmlFor={`min-salary`}>
+          Provide the minimum gross wage in RON at the time of submitting the tax declaration in Romania, to accurately calculate your taxes:
         </label>
         <input
           placeholder="0"
@@ -114,8 +90,8 @@ const TaxCalculator: React.FC<TaxCalculatorProps> = ({taxableProfit}) => {
             }
           }}
           type="number"
-          id={`min-salary ${taxableProfit}`}
-          name={`min-salary ${taxableProfit}`}
+          id={`min-salary`}
+          name={`min-salary`}
           step="0.01"
         />
         {minimumGrossWage ? (
@@ -133,6 +109,5 @@ const TaxCalculator: React.FC<TaxCalculatorProps> = ({taxableProfit}) => {
       </div>
     </div>
     <br/>
-  </>
-  );
+  </>);
 }

@@ -56,7 +56,7 @@ function validateInputs(
   }
 
   for (let fee of feeInputs) {
-    if (!fee.instrument || !fee.amount) {
+    if (!fee.instrument || !fee.amount || !fee.priceInRON) {
       alert("Fee input(s) can't be empty!");
       return false;
     }
@@ -81,7 +81,7 @@ export default function ExchangeFormComponent() {
   const [toInRon, setToInRon] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
-  const [feeInputs, setFeeInputs] = useState([{ instrument: "", amount: "" }]);
+  const [feeInputs, setFeeInputs] = useState([{ instrument: "", amount: "", priceInRON: ""}]);
 
   async function handler(operation: string) {
     if (
@@ -138,7 +138,7 @@ export default function ExchangeFormComponent() {
     setToInRon("");
     setAmount("");
     setDate("");
-    setFeeInputs([{ instrument: "", amount: "" }]);
+    setFeeInputs([{ instrument: "", amount: "", priceInRON: ""}]);
   }
 
   return (

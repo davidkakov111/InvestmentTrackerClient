@@ -35,7 +35,7 @@ function validateInputs(
     return false;
   }
   for (let fee of feeInputs) {
-    if (!fee.instrument || !fee.amount) {
+    if (!fee.instrument || !fee.amount || !fee.priceInRON) {
       alert("Fee input(s) can't be empty!");
       return false;
     }
@@ -57,11 +57,10 @@ export default function TransferFormComponent() {
   const [txLink, setTxLink] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
-  const [feeInputs, setFeeInputs] = useState([{ instrument: "", amount: "" }]);
+  const [feeInputs, setFeeInputs] = useState([{ instrument: "", amount: "", priceInRON: "" }]);
 
   async function handler() {
-    if (!validateInputs(from, to, currency, txLink, amount, feeInputs, date))
-      return;
+    if (!validateInputs(from, to, currency, txLink, amount, feeInputs, date)) return;
 
     const timeStamp = new Date(date).getTime();
     const newHistory: historyInterface = {
@@ -102,7 +101,7 @@ export default function TransferFormComponent() {
     setTxLink("");
     setAmount("");
     setDate("");
-    setFeeInputs([{ instrument: "", amount: "" }]);
+    setFeeInputs([{ instrument: "", amount: "", priceInRON: ""}]);
   }
 
   return (

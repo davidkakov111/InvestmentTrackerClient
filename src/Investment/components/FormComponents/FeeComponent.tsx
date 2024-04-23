@@ -1,8 +1,10 @@
 import { instruments } from "../../Instruments";
 import "../../css/Form.css";
+
 interface feeInputs {
   instrument: string;
   amount: string;
+  priceInRON: string
 }
 interface FeeInputsComponentProps {
   feeInputs: feeInputs[];
@@ -14,7 +16,7 @@ export const FeeInputsComponent: React.FC<FeeInputsComponentProps> = ({
   setFeeInputs,
 }) => {
   const handleAddFeeInput = () => {
-    setFeeInputs([...feeInputs, { instrument: "", amount: "" }]);
+    setFeeInputs([...feeInputs, { instrument: "", amount: "", priceInRON: "" }]);
   };
   const handleRemoveFeeInput = (index: number) => {
     let array = [...feeInputs];
@@ -24,7 +26,7 @@ export const FeeInputsComponent: React.FC<FeeInputsComponentProps> = ({
   const handleFeeChange = (
     index: number,
     value: string,
-    field: "instrument" | "amount"
+    field: "instrument" | "amount" | "priceInRON"
   ) => {
     const newInputs = [...feeInputs];
     newInputs[index][field] = value;
@@ -48,6 +50,13 @@ export const FeeInputsComponent: React.FC<FeeInputsComponentProps> = ({
               style={{ cursor: "help" }}
             >
               Fee amount:
+            </span>
+            <span
+              title="Enter the price in RON of this instrument, which was used to pay this fee."
+              className="mx-auto"
+              style={{ cursor: "help" }}
+            >
+              Price:
             </span>
           </div>
           <div className="flex items-center space-x-4">
@@ -79,6 +88,18 @@ export const FeeInputsComponent: React.FC<FeeInputsComponentProps> = ({
               onChange={(e) => {
                 if (Number(e.target.value) >= 0) {
                   handleFeeChange(index, e.target.value, "amount");
+                }
+              }}
+            />
+            <input
+              name={`Price${index}`}
+              title={`Price${index}`}
+              placeholder="price"
+              type="number"
+              value={value.priceInRON}
+              onChange={(e) => {
+                if (Number(e.target.value) >= 0) {
+                  handleFeeChange(index, e.target.value, "priceInRON");
                 }
               }}
             />
